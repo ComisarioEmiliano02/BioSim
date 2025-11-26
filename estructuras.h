@@ -69,4 +69,57 @@ typedef struct {
   NodoAdyacencia **listas; // Array de punteros a listas de adyacencia
 } Grafo;
 
+// ============================================================
+// ESTRUCTURAS AUXILIARES PARA LOS 8 SUBPROBLEMAS
+// ============================================================
+
+// 5. Hash Table (Subproblema 8: Consultas Rápidas O(1))
+#define HASH_TABLE_SIZE 1009  // Número primo para mejor distribución
+
+typedef struct NodoHash {
+  int individuo_id;      // Clave
+  Individuo *data;       // Valor
+  struct NodoHash *siguiente;  // Para manejo de colisiones (encadenamiento)
+} NodoHash;
+
+typedef struct {
+  NodoHash **tabla;
+  int size;
+  int elementos;
+} TablaHash;
+
+// 6. Trie (Subproblema 7: Clustering de Cepas O(L))
+#define ALPHABET_SIZE 4  // A, C, G, T
+
+typedef struct NodoTrie {
+  struct NodoTrie *hijos[ALPHABET_SIZE];
+  bool es_final;
+  int cepa_id;
+} NodoTrie;
+
+typedef struct {
+  NodoTrie *raiz;
+} Trie;
+
+// 7. Heap (Min-Heap y Max-Heap) (Subproblemas 3 y 5)
+typedef struct {
+  int individuo_id;
+  int prioridad;  // Tiempo, riesgo, o probabilidad según el caso
+  void *datos;
+} ElementoHeap;
+
+typedef struct {
+  ElementoHeap *elementos;
+  int tamano;
+  int capacidad;
+  bool es_min_heap;  // true para Min-Heap, false para Max-Heap
+} Heap;
+
+// 8. Union-Find (Subproblema 6: Contención/Kruskal O(α(n)))
+typedef struct {
+  int *padre;
+  int *rango;
+  int num_elementos;
+} UnionFind;
+
 #endif // ESTRUCTURAS_H

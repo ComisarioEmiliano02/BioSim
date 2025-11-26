@@ -1,4 +1,16 @@
 #include "estructuras.h"
+#include "hash_table.h"
+#include "trie.h"
+#include "heap.h"
+#include "union_find.h"
+#include "analisis_datos.h"
+#include "deteccion_brotes.h"
+#include "propagacion_temporal.h"
+#include "minimizacion_riesgo.h"
+#include "rutas_criticas.h"
+#include "contencion_vacunacion.h"
+#include "clustering_cepas.h"
+#include "consultas_rapidas.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
