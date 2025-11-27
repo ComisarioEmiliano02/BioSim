@@ -180,6 +180,20 @@ int main() {
 
   printf("=== Inicializacion Completa ===\n");
 
+  // ============================================================
+  // SUBPROBLEMA 1: ANALISIS DE DATOS
+  // ============================================================
+  // Demostración de los tres algoritmos de ordenamiento
+  // MergeSort O(n log n), QuickSort O(n log n) promedio, HeapSort O(n log n)
+  test_analisis_datos(poblacion, NUM_INDIVIDUOS_TOTAL);
+
+  // ============================================================
+  // SUBPROBLEMA 2: DETECCION DE BROTES
+  // ============================================================
+  // Detección de componentes conectadas de infectados
+  // BFS O(V+E) vs DFS O(V+E)
+  test_deteccion_brotes(territorios, NUM_TERRITORIOS, poblacion, NUM_INDIVIDUOS_TOTAL);
+
   // Limpieza
   liberar_memoria();
   return 0;

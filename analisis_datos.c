@@ -97,6 +97,7 @@ void quick_sort(Individuo *array, int izq, int der, CriterioOrdenamiento criteri
 }
 
 // HeapSort: O(n log n) garantizado
+// COMENTARIO Big-O: Construcción del heap O(n) + extracción de n elementos O(n log n) = O(n log n) total
 static int padre_idx(int i) { return (i - 1) / 2; }
 static int hijo_izq_idx(int i) { return 2 * i + 1; }
 static int hijo_der_idx(int i) { return 2 * i + 2; }
@@ -121,15 +122,147 @@ static void heapify_down(Individuo *array, int n, int i, CriterioOrdenamiento cr
 
 void heap_sort(Individuo *array, int n, CriterioOrdenamiento criterio) {
   // Construir el heap (Max-Heap)
+  // O(n) operación de heapificación
   for (int i = n / 2 - 1; i >= 0; i--) {
     heapify_down(array, n, i, criterio);
   }
   
   // Extraer elementos uno por uno del heap
+  // O(n log n): n iteraciones, cada una O(log n)
   for (int i = n - 1; i > 0; i--) {
     Individuo temp = array[0];
     array[0] = array[i];
     array[i] = temp;
     heapify_down(array, i, 0, criterio);
   }
+}
+
+// ============================================================
+// FUNCION DE PRUEBA: Test de los tres algoritmos
+// ============================================================
+
+void test_analisis_datos(Individuo *poblacion, int num_individuos) {
+  if (!poblacion || num_individuos <= 0) {
+    printf("ERROR: Poblacion invalida para test\n");
+    return;
+  }
+  
+  printf("\n========== SUBPROBLEMA 1: ANALISIS DE DATOS ==========\n");
+  printf("Población: %d individuos\n\n", num_individuos);
+  
+  // Crear copias de la poblacion para cada algoritmo
+  Individuo *copia_merge = (Individuo *)malloc(num_individuos * sizeof(Individuo));
+  Individuo *copia_quick = (Individuo *)malloc(num_individuos * sizeof(Individuo));
+  Individuo *copia_heap = (Individuo *)malloc(num_individuos * sizeof(Individuo));
+  
+  if (!copia_merge || !copia_quick || !copia_heap) {
+    printf("ERROR: No se pudo asignar memoria para copias\n");
+    free(copia_merge);
+    free(copia_quick);
+    free(copia_heap);
+    return;
+  }
+  
+  // ===== PRUEBA 1: ORDENAR POR RIESGO =====
+  printf("--- PRUEBA 1: Ordenar por RIESGO ---\n");
+  
+  // Copiar datos
+  memcpy(copia_merge, poblacion, num_individuos * sizeof(Individuo));
+  memcpy(copia_quick, poblacion, num_individuos * sizeof(Individuo));
+  memcpy(copia_heap, poblacion, num_individuos * sizeof(Individuo));
+  
+  // MergeSort
+  merge_sort(copia_merge, 0, num_individuos - 1, ORDENAR_POR_RIESGO);
+  
+  // QuickSort
+  quick_sort(copia_quick, 0, num_individuos - 1, ORDENAR_POR_RIESGO);
+  
+  // HeapSort
+  heap_sort(copia_heap, num_individuos, ORDENAR_POR_RIESGO);
+  
+  printf("MergeSort - Primeros 5 individuos por riesgo:\n");
+  for (int i = 0; i < 5 && i < num_individuos; i++) {
+    printf("  %s: riesgo=%d\n", copia_merge[i].nombre, copia_merge[i].riesgo);
+  }
+  
+  printf("\nQuickSort - Primeros 5 individuos por riesgo:\n");
+  for (int i = 0; i < 5 && i < num_individuos; i++) {
+    printf("  %s: riesgo=%d\n", copia_quick[i].nombre, copia_quick[i].riesgo);
+  }
+  
+  printf("\nHeapSort - Primeros 5 individuos por riesgo:\n");
+  for (int i = 0; i < 5 && i < num_individuos; i++) {
+    printf("  %s: riesgo=%d\n", copia_heap[i].nombre, copia_heap[i].riesgo);
+  }
+  
+  // ===== PRUEBA 2: ORDENAR POR TIEMPO DE INFECCION =====
+  printf("\n--- PRUEBA 2: Ordenar por TIEMPO DE INFECCION ---\n");
+  
+  // Copiar datos
+  memcpy(copia_merge, poblacion, num_individuos * sizeof(Individuo));
+  memcpy(copia_quick, poblacion, num_individuos * sizeof(Individuo));
+  memcpy(copia_heap, poblacion, num_individuos * sizeof(Individuo));
+  
+  // MergeSort
+  merge_sort(copia_merge, 0, num_individuos - 1, ORDENAR_POR_TIEMPO);
+  
+  // QuickSort
+  quick_sort(copia_quick, 0, num_individuos - 1, ORDENAR_POR_TIEMPO);
+  
+  // HeapSort
+  heap_sort(copia_heap, num_individuos, ORDENAR_POR_TIEMPO);
+  
+  printf("MergeSort - Últimos 5 infectados (mayor tiempo):\n");
+  for (int i = num_individuos - 5; i < num_individuos && i >= 0; i++) {
+    printf("  %s: tiempo_infeccion=%d\n", copia_merge[i].nombre, copia_merge[i].tiempo_infeccion);
+  }
+  
+  printf("\nQuickSort - Últimos 5 infectados (mayor tiempo):\n");
+  for (int i = num_individuos - 5; i < num_individuos && i >= 0; i++) {
+    printf("  %s: tiempo_infeccion=%d\n", copia_quick[i].nombre, copia_quick[i].tiempo_infeccion);
+  }
+  
+  printf("\nHeapSort - Últimos 5 infectados (mayor tiempo):\n");
+  for (int i = num_individuos - 5; i < num_individuos && i >= 0; i++) {
+    printf("  %s: tiempo_infeccion=%d\n", copia_heap[i].nombre, copia_heap[i].tiempo_infeccion);
+  }
+  
+  // ===== PRUEBA 3: ORDENAR POR NOMBRE =====
+  printf("\n--- PRUEBA 3: Ordenar por NOMBRE (alfabetico) ---\n");
+  
+  // Copiar datos
+  memcpy(copia_merge, poblacion, num_individuos * sizeof(Individuo));
+  memcpy(copia_quick, poblacion, num_individuos * sizeof(Individuo));
+  memcpy(copia_heap, poblacion, num_individuos * sizeof(Individuo));
+  
+  // MergeSort
+  merge_sort(copia_merge, 0, num_individuos - 1, ORDENAR_POR_NOMBRE);
+  
+  // QuickSort
+  quick_sort(copia_quick, 0, num_individuos - 1, ORDENAR_POR_NOMBRE);
+  
+  // HeapSort
+  heap_sort(copia_heap, num_individuos, ORDENAR_POR_NOMBRE);
+  
+  printf("MergeSort - Primeros 5 por nombre:\n");
+  for (int i = 0; i < 5 && i < num_individuos; i++) {
+    printf("  %s\n", copia_merge[i].nombre);
+  }
+  
+  printf("\nQuickSort - Primeros 5 por nombre:\n");
+  for (int i = 0; i < 5 && i < num_individuos; i++) {
+    printf("  %s\n", copia_quick[i].nombre);
+  }
+  
+  printf("\nHeapSort - Primeros 5 por nombre:\n");
+  for (int i = 0; i < 5 && i < num_individuos; i++) {
+    printf("  %s\n", copia_heap[i].nombre);
+  }
+  
+  printf("\n===== FIN PRUEBAS SUBPROBLEMA 1 =====\n\n");
+  
+  // Liberar memoria
+  free(copia_merge);
+  free(copia_quick);
+  free(copia_heap);
 }

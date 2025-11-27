@@ -35,4 +35,11 @@ ResultadoDeteccionBrotes detectar_brotes_dfs(Territorio *territorios, int num_te
  */
 void deteccion_brotes_liberar(ResultadoDeteccionBrotes *resultado);
 
+/**
+ * Función de prueba para BFS y DFS
+ * Complejidad: O(V + E) para cada algoritmo
+ */
+void test_deteccion_brotes(Territorio *territorios, int num_territorios,
+                           Individuo *poblacion, int num_individuos);
+
 #endif // DETECCION_BROTES_H

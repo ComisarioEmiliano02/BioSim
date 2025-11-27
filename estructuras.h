@@ -122,4 +122,29 @@ typedef struct {
   int num_elementos;
 } UnionFind;
 
+// 9. Cola FIFO para BFS (Subproblema 2: Deteccion de Brotes)
+typedef struct NodoFila {
+  int individuo_id;
+  struct NodoFila *siguiente;
+} NodoFila;
+
+typedef struct {
+  NodoFila *frente;
+  NodoFila *cola;
+  int tamano;
+} Cola;
+
+// 10. Grafo de Contactos (Subproblema 2: Detección de Brotes)
+// Lista de adyacencia para contactos entre individuos
+typedef struct NodoContacto {
+  int individuo_id;          // ID del individuo en contacto
+  float probabilidad_contacto; // Probabilidad de transmisión
+  struct NodoContacto *siguiente;
+} NodoContacto;
+
+typedef struct {
+  int num_individuos;
+  NodoContacto **listas;  // Array de listas de adyacencia
+} GrafoContactos;
+
 #endif // ESTRUCTURAS_H

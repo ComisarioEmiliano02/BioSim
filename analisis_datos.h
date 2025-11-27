@@ -40,4 +40,11 @@ void heap_sort(Individuo *array, int n, CriterioOrdenamiento criterio);
  */
 int comparar_individuos(const Individuo *a, const Individuo *b, CriterioOrdenamiento criterio);
 
+/**
+ * Función de prueba para los tres algoritmos de ordenamiento
+ * Complejidad: O(3 * n log n) = O(n log n)
+ * Demuestra los tres algoritmos con tres criterios diferentes
+ */
+void test_analisis_datos(Individuo *poblacion, int num_individuos);
+
 #endif // ANALISIS_DATOS_H
