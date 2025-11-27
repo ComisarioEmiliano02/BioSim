@@ -147,4 +147,26 @@ typedef struct {
   NodoContacto **listas;  // Array de listas de adyacencia
 } GrafoContactos;
 
+// 11. Evento de Infeccion (Subproblema 3: Propagación Temporal)
+typedef struct {
+  int tiempo;           // Día del evento
+  int individuo_id;     // Individuo afectado
+  int individuo_origen; // Quién lo infectó (-1 si es inicial)
+  int territorio_id;    // Territorio donde ocurre
+  int cepa_id;          // Cepa viral
+  float probabilidad;   // Probabilidad de transmisión
+} EventoInfeccion;
+
+// Resultado de la simulación de propagación temporal
+typedef struct {
+  int total_infectados;
+  int total_recuperados;
+  int total_muertos;
+  int dias_simulados;
+  int num_eventos;
+  int *infectados_por_dia;  // Array con infectados acumulados por día
+  int *recuperados_por_dia; // Array con recuperados acumulados por día
+  int *muertos_por_dia;     // Array con muertos acumulados por día
+} ResultadoPropagacion;
+
 #endif // ESTRUCTURAS_H

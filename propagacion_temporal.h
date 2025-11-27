@@ -2,51 +2,53 @@
 #define PROPAGACION_TEMPORAL_H
 
 #include "estructuras.h"
-#include "heap.h"
 
 // ============================================================
 // SUBPROBLEMA 3: Propagación Temporal
-// Simular contagios día a día
+// Simular contagios día a día usando eventos y Min-Heap
 // Restricción: <= O(n log n)
 // Estructura: Min-Heap para gestionar eventos cronológicos
 // ============================================================
 
-typedef struct {
-  int dia;
-  int susceptibles;
-  int infectados;
-  int recuperados;
-  int fallecidos;
-} EstadisticaDia;
-
-typedef struct {
-  EstadisticaDia *estadisticas;
-  int dias_simulados;
-  int capacidad;
-} ResultadoSimulacion;
-
 /**
- * Simula la propagación de la epidemia día a día
+ * Simula la propagación temporal de la infección
  * Usa Min-Heap para procesar eventos en orden cronológico
  * Complejidad: O(n log n) donde n es número total de eventos
- * días: número de días a simular
- * Retorna: Estadísticas diarias de la simulación
+ * 
+ * Parámetros:
+ *   - territorios: array de territorios
+ *   - num_territorios: cantidad de territorios
+ *   - poblacion: array de individuos
+ *   - num_poblacion: cantidad de individuos
+ *   - cepas: array de cepas virales
+ *   - num_cepas: cantidad de cepas
+ *   - dias_simulacion: número de días a simular
+ * 
+ * Retorna: ResultadoPropagacion con estadísticas de la simulación
  */
-ResultadoSimulacion simular_propagacion(
-  Individuo *poblacion, 
-  int num_individuos,
-  Cepa *cepas,
-  int num_cepas,
+ResultadoPropagacion* simular_propagacion_temporal(
   Territorio *territorios,
   int num_territorios,
-  Grafo *grafo_territorios,
-  int dias
+  Individuo *poblacion,
+  int num_poblacion,
+  Cepa *cepas,
+  int num_cepas,
+  int dias_simulacion
 );
 
 /**
  * Libera los resultados de la simulación
  * Complejidad: O(1)
  */
-void simulacion_liberar(ResultadoSimulacion *resultado);
+void liberar_resultado_propagacion(ResultadoPropagacion *resultado);
+
+/**
+ * Función de prueba para Subproblema 3
+ * Ejecuta simulación y muestra resultados
+ * Complejidad: O(n log n)
+ */
+void test_propagacion_temporal(Territorio *territorios, int num_territorios,
+                               Individuo *poblacion, int num_poblacion,
+                               Cepa *cepas, int num_cepas);
 
 #endif // PROPAGACION_TEMPORAL_H

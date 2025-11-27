@@ -194,6 +194,13 @@ int main() {
   // BFS O(V+E) vs DFS O(V+E)
   test_deteccion_brotes(territorios, NUM_TERRITORIOS, poblacion, NUM_INDIVIDUOS_TOTAL);
 
+  // ============================================================
+  // SUBPROBLEMA 3: PROPAGACION TEMPORAL
+  // ============================================================
+  // Simulación temporal de propagación de infecciones
+  // Min-Heap para procesar eventos cronológicamente O(n log n)
+  test_propagacion_temporal(territorios, NUM_TERRITORIOS, poblacion, NUM_INDIVIDUOS_TOTAL, cepas, NUM_CEPAS);
+
   // Limpieza
   liberar_memoria();
   return 0;
