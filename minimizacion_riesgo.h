@@ -42,4 +42,10 @@ float* calcular_riesgo_propagacion(Individuo *poblacion, int num_individuos);
  */
 void aislamiento_liberar(ResultadoAislamiento *resultado);
 
+/**
+ * Función de prueba para el algoritmo Greedy de minimización de riesgo
+ * Prueba con diferentes porcentajes de aislamiento
+ */
+void test_minimizacion_riesgo(Individuo *poblacion, int num_individuos);
+
 #endif // MINIMIZACION_RIESGO_H

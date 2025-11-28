@@ -201,6 +201,13 @@ int main() {
   // Min-Heap para procesar eventos cronológicamente O(n log n)
   test_propagacion_temporal(territorios, NUM_TERRITORIOS, poblacion, NUM_INDIVIDUOS_TOTAL, cepas, NUM_CEPAS);
 
+  // ============================================================
+  // SUBPROBLEMA 4: MINIMIZACION DE RIESGO
+  // ============================================================
+  // Seleccionar individuos a aislar usando enfoque Greedy
+  // O(n log n) por ordenamiento
+  test_minimizacion_riesgo(poblacion, NUM_INDIVIDUOS_TOTAL);
+
   // Limpieza
   liberar_memoria();
   return 0;
