@@ -47,4 +47,11 @@ RegistroHistorial obtener_historial_paciente(TablaHash *tabla, int individuo_id)
  */
 void historial_liberar(RegistroHistorial *historial);
 
+/**
+ * Funcion de prueba para Subproblema 8
+ * Demuestra consultas hash y estadisticas
+ */
+void test_consultas_rapidas(Individuo *poblacion, int num_individuos,
+                            Territorio *territorios, int num_territorios);
+
 #endif // CONSULTAS_RAPIDAS_H

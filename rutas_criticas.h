@@ -50,4 +50,15 @@ RutaCritica* dijkstra_multiple(
  */
 void ruta_critica_liberar(RutaCritica *ruta);
 
+/**
+ * Función de prueba para el algoritmo Dijkstra de rutas críticas
+ * Encuentra múltiples rutas de máxima probabilidad
+ */
+void test_rutas_criticas(
+  Grafo *grafo_territorios,
+  int num_territorios,
+  Cepa *cepas,
+  int num_cepas
+);
+
 #endif // RUTAS_CRITICAS_H

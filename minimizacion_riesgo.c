@@ -170,7 +170,7 @@ void test_minimizacion_riesgo(Individuo *poblacion, int num_individuos) {
   }
   
   printf("\n========== SUBPROBLEMA 4: MINIMIZACION DE RIESGO ==========\n");
-  printf("Población: %d individuos\n\n", num_individuos);
+  printf("Poblacion: %d individuos\n\n", num_individuos);
   
   // Contar infectados
   int num_infectados = 0;
@@ -183,10 +183,10 @@ void test_minimizacion_riesgo(Individuo *poblacion, int num_individuos) {
   }
   
   printf("Infectados: %d\n", num_infectados);
-  printf("Riesgo total de población: %d\n\n", riesgo_total_poblacion);
+  printf("Riesgo total de poblacion: %d\n\n", riesgo_total_poblacion);
   
   // Prueba 1: Aislar el 5% de la población
-  printf("--- PRUEBA 1: Aislar 5%% de la población ---\n");
+  printf("--- PRUEBA 1: Aislar 5%% de la poblacion ---\n");
   ResultadoAislamiento resultado_5 = minimizar_riesgo_greedy(poblacion, num_individuos, 5.0f);
   
   printf("Individuos a aislar: %d\n", resultado_5.cantidad);
@@ -202,7 +202,7 @@ void test_minimizacion_riesgo(Individuo *poblacion, int num_individuos) {
   }
   
   // Prueba 2: Aislar el 10% de la población
-  printf("\n--- PRUEBA 2: Aislar 10%% de la población ---\n");
+  printf("--- PRUEBA 2: Aislar 10%% de la poblacion ---\n");
   ResultadoAislamiento resultado_10 = minimizar_riesgo_greedy(poblacion, num_individuos, 10.0f);
   
   printf("Individuos a aislar: %d\n", resultado_10.cantidad);
@@ -218,7 +218,7 @@ void test_minimizacion_riesgo(Individuo *poblacion, int num_individuos) {
   }
   
   // Prueba 3: Aislar el 20% de la población
-  printf("\n--- PRUEBA 3: Aislar 20%% de la población ---\n");
+  printf("--- PRUEBA 3: Aislar 20%% de la poblacion ---\n");
   ResultadoAislamiento resultado_20 = minimizar_riesgo_greedy(poblacion, num_individuos, 20.0f);
   
   printf("Individuos a aislar: %d\n", resultado_20.cantidad);
@@ -247,7 +247,7 @@ void test_minimizacion_riesgo(Individuo *poblacion, int num_individuos) {
          (riesgo_total_poblacion > 0) ? (resultado_20.riesgo_reducido / riesgo_total_poblacion * 100) : 0);
   
   printf("\nComplejidad: O(n log n) por ordenamiento\n");
-  printf("Estrategia: Greedy - Selecciona individuos con máximo riesgo\n");
+  printf("Estrategia: Greedy - Selecciona individuos con maximo riesgo\n");
   
   printf("\n===== FIN PRUEBAS SUBPROBLEMA 4 =====\n\n");
   

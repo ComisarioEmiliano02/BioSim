@@ -208,6 +208,32 @@ int main() {
   // O(n log n) por ordenamiento
   test_minimizacion_riesgo(poblacion, NUM_INDIVIDUOS_TOTAL);
 
+  // ============================================================
+  // SUBPROBLEMA 5: RUTAS CRITICAS
+  // ============================================================
+  // Encontrar rutas de máxima probabilidad de infección
+  // Dijkstra modificado con Max-Heap O((n+m) log n)
+  test_rutas_criticas(&grafo_territorios, NUM_TERRITORIOS, cepas, NUM_CEPAS);
+
+  // ============================================================
+  // SUBPROBLEMA 6: CONTENCION (VACUNACION)
+  // ============================================================
+  // Encontrar árbol de expansión mínima para cobertura de vacunación
+  // MST con Kruskal O(m log m) y Prim O(n^2)
+  test_contencion_vacunacion(&grafo_territorios, NUM_TERRITORIOS);
+
+  // ============================================================
+  // SUBPROBLEMA 7: CLUSTERING DE CEPAS
+  // ============================================================
+  // Agrupar cepas por similitud de nombre usando Trie O(k*L)
+  test_clustering_cepas(cepas, NUM_CEPAS);
+
+  // ============================================================
+  // SUBPROBLEMA 8: CONSULTAS RAPIDAS
+  // ============================================================
+  // Busquedas eficientes usando Tabla Hash O(1) promedio
+  test_consultas_rapidas(poblacion, NUM_INDIVIDUOS_TOTAL, territorios, NUM_TERRITORIOS);
+
   // Limpieza
   liberar_memoria();
   return 0;

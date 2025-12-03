@@ -43,4 +43,10 @@ GrupoVariantes* clustering_completo(Cepa *cepas, int num_cepas, int *num_grupos)
  */
 void clustering_liberar(GrupoVariantes *grupos, int num_grupos);
 
+/**
+ * Funcion de prueba para Subproblema 7
+ * Demuestra clustering por prefijos y estadisticas
+ */
+void test_clustering_cepas(Cepa *cepas, int num_cepas);
+
 #endif // CLUSTERING_CEPAS_H

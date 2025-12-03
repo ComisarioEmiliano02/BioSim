@@ -89,17 +89,20 @@ int* trie_buscar_por_prefijo(Trie *trie, const char *prefijo, int *cantidad) {
   int *resultados = (int *)malloc(sizeof(int) * 50);  // Max 50 cepas
   int idx = 0;
   
-  void dfs(NodoTrie * nodo) {
+  // DFS recursivo para recolectar todas las cepas bajo este nodo
+  void _dfs_recolectar(NodoTrie *nodo) {
     if (nodo == NULL) return;
     if (nodo->es_final && idx < 50) {
       resultados[idx++] = nodo->cepa_id;
     }
     for (int i = 0; i < ALPHABET_SIZE; i++) {
-      dfs(nodo->hijos[i]);
+      if (nodo->hijos[i] != NULL) {
+        _dfs_recolectar(nodo->hijos[i]);
+      }
     }
   }
   
-  dfs(actual);
+  _dfs_recolectar(actual);
   *cantidad = idx;
   return resultados;
 }
