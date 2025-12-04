@@ -172,18 +172,20 @@ void test_minimizacion_riesgo(Individuo *poblacion, int num_individuos) {
   printf("\n========== SUBPROBLEMA 4: MINIMIZACION DE RIESGO ==========\n");
   printf("Poblacion: %d individuos\n\n", num_individuos);
   
-  // Contar infectados
+  // Calcular riesgos y estadísticas
+  float *riesgos = calcular_riesgo_propagacion(poblacion, num_individuos);
   int num_infectados = 0;
-  int riesgo_total_poblacion = 0;
+  float riesgo_total_poblacion = 0.0f;
+  
   for (int i = 0; i < num_individuos; i++) {
     if (poblacion[i].estado == INFECTADO) {
       num_infectados++;
-      riesgo_total_poblacion += poblacion[i].riesgo;
     }
+    riesgo_total_poblacion += riesgos[i];
   }
   
   printf("Infectados: %d\n", num_infectados);
-  printf("Riesgo total de poblacion: %d\n\n", riesgo_total_poblacion);
+  printf("Riesgo total de poblacion: %.2f\n\n", riesgo_total_poblacion);
   
   // Prueba 1: Aislar el 5% de la población
   printf("--- PRUEBA 1: Aislar 5%% de la poblacion ---\n");
@@ -255,4 +257,5 @@ void test_minimizacion_riesgo(Individuo *poblacion, int num_individuos) {
   aislamiento_liberar(&resultado_5);
   aislamiento_liberar(&resultado_10);
   aislamiento_liberar(&resultado_20);
+  free(riesgos);
 }

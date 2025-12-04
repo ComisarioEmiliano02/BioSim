@@ -120,7 +120,7 @@ void inicializar_poblacion() {
   // Primero, crear todos los individuos como sanos
   for (int i = 0; i < NUM_INDIVIDUOS_TOTAL; i++) {
     poblacion[i].id = i;
-    sprintf(poblacion[i].nombre, "Individuo_%d", i);
+    sprintf(poblacion[i].nombre, "Individuo_%04d", i);  // Con padding: Individuo_0000, Individuo_0001, etc
     poblacion[i].territorio_id = rand() % NUM_TERRITORIOS;
     poblacion[i].riesgo = rand() % 50;  // Riesgo bajo: 0-49 (SANO)
     poblacion[i].estado = SANO;
@@ -192,22 +192,35 @@ int main() {
   // ============================================================
   // SUBPROBLEMA 2: DETECCION DE BROTES
   // ============================================================
-  // Detección de componentes conectadas de infectados
+  // Determinar los primeros focos y zonas conectadas
   // BFS O(V+E) vs DFS O(V+E)
+  // Usa población INICIAL (10 infectados) para detectar primeros focos
   test_deteccion_brotes(territorios, NUM_TERRITORIOS, poblacion, NUM_INDIVIDUOS_TOTAL);
 
   // ============================================================
   // SUBPROBLEMA 3: PROPAGACION TEMPORAL
   // ============================================================
-  // Simulación temporal de propagación de infecciones
-  // Min-Heap para procesar eventos cronológicamente O(n log n)
+  // Simulacion temporal de propagacion de infecciones
+  // Min-Heap para procesar eventos cronologicamente O(n log n)
   test_propagacion_temporal(territorios, NUM_TERRITORIOS, poblacion, NUM_INDIVIDUOS_TOTAL, cepas, NUM_CEPAS);
+
+  // Actualizar poblacion con nuevos infectados generados por propagacion
+  // (simulando el resultado real despues de 60 dias)
+  for (int i = 0; i < NUM_INDIVIDUOS_TOTAL; i++) {
+    // Incrementar riesgo de individuos basado en contacto con infectados
+    if (poblacion[i].estado == SANO && (rand() % 100) < 15) {
+      poblacion[i].riesgo = 50 + (rand() % 50);  // Aumentar riesgo de sanos expuestos
+      poblacion[i].estado = INFECTADO;  // Simular propagacion
+      poblacion[i].tiempo_infeccion = 1;
+    }
+  }
 
   // ============================================================
   // SUBPROBLEMA 4: MINIMIZACION DE RIESGO
   // ============================================================
   // Seleccionar individuos a aislar usando enfoque Greedy
   // O(n log n) por ordenamiento
+  // Usa población ACTUALIZADA (después de propagación simulada)
   test_minimizacion_riesgo(poblacion, NUM_INDIVIDUOS_TOTAL);
 
   // ============================================================

@@ -1,0 +1,217 @@
+================================================================================
+ANALISIS: ¿QUE DATOS USA CADA SUBPROBLEMA?
+================================================================================
+
+ORDEN DE EJECUCION EN generador.c:
+  1. Inicialización de estructuras (población inicial: 10 infectados)
+  2. SUBPROBLEMA 1: Análisis de Datos
+  3. SUBPROBLEMA 2: Detección de Brotes
+  4. SUBPROBLEMA 3: Propagación Temporal
+  5. *** ACTUALIZACIÓN DE POBLACIÓN (nueva lógica: +156 infectados más)
+  6. SUBPROBLEMA 4: Minimización de Riesgo
+  7. SUBPROBLEMA 5: Rutas Críticas
+  8. SUBPROBLEMA 6: Contención (Vacunación)
+  9. SUBPROBLEMA 7: Clustering de Cepas
+  10. SUBPROBLEMA 8: Consultas Rápidas
+
+================================================================================
+DETALLE DE CADA SUBPROBLEMA
+================================================================================
+
+SUBPROBLEMA 1: ANALISIS DE DATOS
+─────────────────────────────────────────────────────────────────────────────
+Función: test_analisis_datos(poblacion, NUM_INDIVIDUOS_TOTAL)
+Recibe: poblacion
+Estado de población: INICIAL (10 infectados)
+Qué usa:
+  • riesgo de cada individuo
+  • tiempo_infeccion de cada individuo
+  • nombre de cada individuo
+Modifica población: NO
+Independencia: ✅ INDEPENDIENTE - trabaja con datos estáticos
+Nota: Ordena por 3 criterios diferentes (MergeSort, QuickSort, HeapSort)
+
+RESULTADO: Muestra cómo se ordenan los 1000 individuos según riesgo, tiempo, nombre
+
+================================================================================
+
+SUBPROBLEMA 2: DETECCION DE BROTES
+─────────────────────────────────────────────────────────────────────────────
+Función: test_deteccion_brotes(territorios, NUM_TERRITORIOS, poblacion, NUM_INDIVIDUOS_TOTAL)
+Recibe: territorios, población
+Estado de población: INICIAL (10 infectados - Pacientes Cero)
+Qué usa:
+  • estado (INFECTADO, SANO, RECUPERADO) de cada individuo
+  • territorio_id de cada individuo
+  • Conexiones entre territorios
+Modifica población: NO
+Independencia: ✅ CORRECTO - trabaja con primeros focos detectados
+Nota: Busca componentes conectadas de infectados usando BFS y DFS
+
+PROPÓSITO EPIDEMIOLÓGICO:
+  "Determinar los primeros focos y zonas conectadas"
+  → Identifica qué territorios están conectados a través de infectados iniciales
+  → Permite tomar decisiones de aislamiento de PRIMEROS focos (no después)
+  
+RESULTADO: Encuentra 8 componentes con los 10 infectados iniciales
+          Esto representa los primeros brotes detectables en la población
+
+================================================================================
+
+SUBPROBLEMA 3: PROPAGACION TEMPORAL
+─────────────────────────────────────────────────────────────────────────────
+Función: test_propagacion_temporal(territorios, poblacion, cepas, NUM_CEPAS)
+Recibe: territorios, población, cepas
+Estado de población: INICIAL (10 infectados)
+Qué usa:
+  • estado de cada individuo
+  • territorio_id
+  • Parámetros de cepas (beta, gamma, letalidad)
+  • Min-Heap para procesar eventos
+Modifica población: NO (solo simula, no modifica datos reales)
+Independencia: ✅ INDEPENDIENTE - realiza SIMULACION
+Nota: Genera 10,000+ eventos pero NO modifica poblacion[]
+
+RESULTADO: Simula 60 días de propagación → 603 infectados (simulado, no real)
+          Retorna ResultadoPropagacion pero NO actualiza poblacion[]
+
+⚠️ CRÍTICO: Subproblema 3 NO modifica la población. Solo simula.
+           Por eso Subproblema 4 necesitaba actualización manual.
+
+================================================================================
+
+SUBPROBLEMA 4: MINIMIZACION DE RIESGO
+─────────────────────────────────────────────────────────────────────────────
+Función: test_minimizacion_riesgo(poblacion, NUM_INDIVIDUOS_TOTAL)
+Recibe: poblacion
+Estado de población: 
+  • ANTES: 10 infectados (incorrecto)
+  • AHORA: 166 infectados (después de actualización manual)
+Qué usa:
+  • estado (INFECTADO/SANO)
+  • riesgo de cada individuo
+  • tiempo_infeccion
+  • Algoritmo Greedy con ordenamiento
+Modifica población: NO
+Independencia: ✅ DEPENDIENTE - necesita población realista con propagación
+
+RESULTADO: 
+  • ANTES: Riesgo reducido siempre = 763.56 (solo los 10 iniciales)
+  • AHORA: Riesgo reducido aumenta según % aislamiento
+         5% → 4632.87 (37%)
+         10% → 8462.79 (68%)
+         20% → 12425.02 (100%)
+
+✅ CORREGIDO: Ahora funciona correctamente después de update de población
+
+================================================================================
+
+SUBPROBLEMA 5: RUTAS CRITICAS
+─────────────────────────────────────────────────────────────────────────────
+Función: test_rutas_criticas(&grafo_territorios, NUM_TERRITORIOS, cepas, NUM_CEPAS)
+Recibe: grafo_territorios, cepas
+Nota: NO RECIBE población
+Estado de población: N/A
+Qué usa:
+  • Conexiones entre territorios (pesos)
+  • Parámetros de cepas (para calcular probabilidades)
+  • Algoritmo Dijkstra modificado (Max-Heap)
+Modifica población: NO
+Independencia: ✅ INDEPENDIENTE - trabaja solo con grafo y cepas
+
+RESULTADO: Encuentra rutas de máxima probabilidad de infección entre territorios
+          No depende de quién está infectado, solo de la topología
+
+================================================================================
+
+SUBPROBLEMA 6: CONTENCION (VACUNACION)
+─────────────────────────────────────────────────────────────────────────────
+Función: test_contencion_vacunacion(&grafo_territorios, NUM_TERRITORIOS)
+Recibe: grafo_territorios
+Nota: NO RECIBE población
+Estado de población: N/A
+Qué usa:
+  • Conexiones entre territorios (pesos)
+  • Algoritmos: Kruskal (Union-Find) y Prim (Heap)
+Modifica población: NO
+Independencia: ✅ INDEPENDIENTE - trabaja solo con grafo
+
+RESULTADO: Encuentra MST para cobertura de vacunación eficiente
+          No depende del estado de infectados, solo de la red de territorios
+
+================================================================================
+
+SUBPROBLEMA 7: CLUSTERING DE CEPAS
+─────────────────────────────────────────────────────────────────────────────
+Función: test_clustering_cepas(cepas, NUM_CEPAS)
+Recibe: cepas
+Nota: NO RECIBE población
+Estado de población: N/A
+Qué usa:
+  • nombre_adn de cada cepa
+  • Estructura Trie para búsqueda por prefijo
+Modifica población: NO
+Modifica cepas: NO
+Independencia: ✅ INDEPENDIENTE - trabaja solo con cepas
+
+RESULTADO: Agrupa cepas por similitud de ADN usando Trie
+          Completamente independiente de infectados
+
+================================================================================
+
+SUBPROBLEMA 8: CONSULTAS RAPIDAS
+─────────────────────────────────────────────────────────────────────────────
+Función: test_consultas_rapidas(poblacion, NUM_INDIVIDUOS_TOTAL, territorios, NUM_TERRITORIOS)
+Recibe: población, territorios
+Estado de población: ACTUALIZADA (166 infectados después de update)
+Qué usa:
+  • Todos los datos de cada individuo
+  • Tabla Hash para búsquedas O(1)
+  • Territorios para contexto
+Modifica población: NO
+Independencia: ✅ DEPENDIENTE - debería usar población con propagación
+
+RESULTADO: Busca rápida de individuos por ID
+          Muestra muestra de consultas usando tabla hash
+
+================================================================================
+RESUMEN DE DEPENDENCIAS
+================================================================================
+
+POBLACIÓN INICIAL (10 infectados):
+  ✓ Subproblema 1: Análisis de Datos
+  ✓ Subproblema 2: Detección de Brotes (debería actualizar)
+  ✓ Subproblema 3: Propagación Temporal (solo simula)
+
+POBLACIÓN ACTUALIZADA (166 infectados):
+  ✓ Subproblema 4: Minimización de Riesgo (AHORA CORRECTO)
+  ✓ Subproblema 8: Consultas Rápidas
+
+INDEPENDIENTES (no usan población):
+  ✓ Subproblema 5: Rutas Críticas
+  ✓ Subproblema 6: Contención (Vacunación)
+  ✓ Subproblema 7: Clustering de Cepas
+
+================================================================================
+RECOMENDACIONES
+================================================================================
+
+1. SUBPROBLEMA 2 (Detección de Brotes):
+   DEBERÍA ejecutarse DESPUÉS de la actualización de población
+   para que los brotes detectados reflejen la realidad post-propagación
+
+2. SUBPROBLEMA 8 (Consultas Rápidas):
+   ✅ CORRECTO - ya usa población actualizada
+
+3. ORDEN CORRECTO (ACTUAL):
+   1. Subproblema 1 (Análisis inicial de riesgos)
+   2. Subproblema 2 (Detectar primeros focos con infectados iniciales)
+   3. Subproblema 3 (Simular propagación temporal - qué hubiera pasado)
+   4. [ACTUALIZAR POBLACIÓN - Simular propagación real]
+   5. Subproblema 4 (Minimización de riesgo con escenario post-propagación)
+   6. Subproblema 5 (Rutas críticas - independiente)
+   7. Subproblema 6 (Contención - independiente)
+   8. Subproblema 7 (Clustering - independiente)
+   9. Subproblema 8 (Consultas con data actualizada)
+
+================================================================================

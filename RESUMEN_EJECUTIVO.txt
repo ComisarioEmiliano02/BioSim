@@ -1,0 +1,230 @@
+================================================================================
+RESUMEN EJECUTIVO: ESTRUCTURA Y FLUJO DEL PROYECTO BIOSIM
+================================================================================
+
+PROYECTO: BioSim - Simulador Algorítmico de Epidemias
+LENGUAJE: C99
+POBLACIÓN INICIAL: 1000 individuos (10 infectados)
+DURACIÓN SIMULACIÓN: 60 días
+
+================================================================================
+ESTRUCTURA DE LOS 8 SUBPROBLEMAS
+================================================================================
+
+┌─ FASE 1: ANÁLISIS INICIAL (Población inicial)
+│
+├─ [SP1] ANALISIS DE DATOS ─────────────────────────────────────────────────
+│  Qué hace: Ordena individuos por 3 criterios diferentes
+│  Algoritmos: MergeSort O(n log n)
+│              QuickSort O(n log n) promedio
+│              HeapSort O(n log n)
+│  Usa: Poblacion = 1000 individuos (10 infectados)
+│  Resultado: Ranking de riesgos
+│  
+├─ [SP2] DETECCION DE BROTES ────────────────────────────────────────────────
+│  Qué hace: Detecta dónde empiezan los focos epidemiológicos
+│  Algoritmos: BFS O(V+E)
+│              DFS O(V+E)
+│  Usa: Poblacion = 1000 individuos (10 infectados iniciales)
+│  Resultado: 8 componentes conectadas
+│             Cuáles territorios están en riesgo inmediato
+│
+├─ [SP3] PROPAGACION TEMPORAL ───────────────────────────────────────────────
+│  Qué hace: Simula qué hubiera pasado en 60 días
+│  Algoritmo: Min-Heap para procesar eventos O(n log n)
+│  Usa: Poblacion = 1000 individuos (10 infectados iniciales)
+│  Resultado: Estadísticas de propagación simulada
+│             ~603 infectados hipotéticos después de 60 días
+│             NOTA: NO modifica poblacion[], solo simula
+│
+│                    ↓ ACTUALIZACIÓN DE POBLACIÓN
+│                    Simula el escenario realista
+│                    ~15% de sanos se exponen → infectan
+│                    Nuevos infectados: 166 (aproximadamente)
+│
+└─ FASE 2: ANÁLISIS CON ESCENARIO POST-PROPAGACIÓN
+  
+├─ [SP4] MINIMIZACION DE RIESGO ────────────────────────────────────────────
+│  Qué hace: Decide a quién aislar para minimizar contagios
+│  Algoritmo: Greedy con ordenamiento O(n log n)
+│  Usa: Poblacion ACTUALIZADA (166 infectados)
+│  Resultado: Eficacia de aislar 5%, 10%, 20%
+│             - 5% (50 personas): Reduce 37% del riesgo
+│             - 10% (100 personas): Reduce 68% del riesgo
+│             - 20% (200 personas): Reduce 100% del riesgo
+│
+├─ [SP5] RUTAS CRITICAS ─────────────────────────────────────────────────────
+│  Qué hace: Encuentra caminos de máxima probabilidad de contagio
+│  Algoritmo: Dijkstra modificado con Max-Heap O((n+m) log n)
+│  Usa: Grafo de territorios + Cepas (NO usa población)
+│  Resultado: Rutas más peligrosas entre territorios
+│             Ejemplo: T3 → T9 → T13 → T16 → T15 (prob. 2.67%)
+│
+├─ [SP6] CONTENCION (VACUNACION) ────────────────────────────────────────────
+│  Qué hace: Planifica red mínima de cobertura de vacunación
+│  Algoritmos: Kruskal (Union-Find) O(m log m)
+│              Prim (con Heap) O((n+m) log n)
+│  Usa: Grafo de territorios (NO usa población)
+│  Resultado: MST (Árbol de Expansión Mínima)
+│             Define territorios críticos para vacunación
+│
+├─ [SP7] CLUSTERING DE CEPAS ────────────────────────────────────────────────
+│  Qué hace: Agrupa variantes por similitud de ADN
+│  Algoritmo: Trie para búsqueda de prefijos O(k*L)
+│  Usa: Array de 50 cepas (NO usa población)
+│  Resultado: Familias de variantes del virus
+│             Agrupa por patrones de ADN comunes
+│
+└─ [SP8] CONSULTAS RAPIDAS ─────────────────────────────────────────────────
+   Qué hace: Búsquedas rápidas de información de pacientes
+   Algoritmo: Tabla Hash O(1) promedio
+   Usa: Poblacion ACTUALIZADA (166 infectados)
+   Resultado: Historial rápido de cambios de estado
+              Consultas por ID de individuo
+              Información de territorios
+
+================================================================================
+FLUJO DE DATOS
+================================================================================
+
+INICIO
+  ↓
+GENERAR DATOS INICIALES
+  ├─ 1000 individuos
+  ├─ 50 cepas virales
+  ├─ 20 territorios conectados
+  └─ 10 infectados (pacientes cero)
+  ↓
+[SP1] ANALISIS DATOS: Ordena población
+  │     Input: población (10 infectados)
+  │     Output: Rankings por riesgo/tiempo/nombre
+  │
+[SP2] DETECCION BROTES: Identifica focos iniciales
+  │     Input: población (10 infectados)
+  │     Output: 8 componentes epidemiológicas
+  │
+[SP3] PROPAGACION TEMPORAL: Simula 60 días
+  │     Input: población (10 infectados)
+  │     Output: Estadísticas de propagación
+  │
+  ↓ ACTUALIZACIÓN
+  └─→ Simula resultado real de propagación
+      Algunos sanos se infectan (~15%)
+      Nueva población: ~166 infectados
+  │
+  ↓
+[SP4] MINIMIZACION RIESGO: Aisla estratégicamente
+      Input: población (166 infectados)
+      Output: Eficacia de aislamiento
+  │
+[SP5] RUTAS CRITICAS: Identifica caminos peligrosos
+      Input: grafo (NO población)
+      Output: Rutas de máxima probabilidad
+  │
+[SP6] CONTENCION: Planifica vacunación
+      Input: grafo (NO población)
+      Output: MST para cobertura
+  │
+[SP7] CLUSTERING: Agrupa variantes
+      Input: cepas (NO población)
+      Output: Familias de variantes
+  │
+[SP8] CONSULTAS: Búsquedas rápidas
+      Input: población (166 infectados)
+      Output: Historial de pacientes
+  ↓
+FIN
+
+================================================================================
+INDEPENDENCIA Y DEPENDENCIAS
+================================================================================
+
+DEPENDEN DE POBLACIÓN INICIAL (10 infectados):
+  [SP1] ✓ Analiza datos estáticos
+  [SP2] ✓ Detecta focos iniciales  
+  [SP3] ✓ Simula escenario sin intervención
+
+DEPENDEN DE POBLACIÓN POST-ACTUALIZACIÓN (166 infectados):
+  [SP4] ✓ Minimiza con escenario realista
+  [SP8] ✓ Consultas con data realista
+
+COMPLETAMENTE INDEPENDIENTES (No usan población):
+  [SP5] ✓ Solo grafo + cepas
+  [SP6] ✓ Solo grafo
+  [SP7] ✓ Solo cepas
+
+================================================================================
+COMPLEJIDADES ALGORÍTMICAS
+================================================================================
+
+[SP1] ANALISIS DE DATOS
+  MergeSort:  O(n log n)     Garantizado
+  QuickSort:  O(n log n)     Promedio, O(n²) peor
+  HeapSort:   O(n log n)     Garantizado
+  Total: O(3 * n log n) = O(n log n)
+
+[SP2] DETECCION DE BROTES
+  BFS:        O(V + E)       V=infectados, E=contactos
+  DFS:        O(V + E)       V=infectados, E=contactos
+  Total: O(2 * (V + E)) = O(V + E)
+
+[SP3] PROPAGACION TEMPORAL
+  Generar eventos:   O(n)
+  Procesar eventos:  O(n log n)  Con Min-Heap
+  Total: O(n log n)  donde n = número de eventos
+
+[SP4] MINIMIZACION DE RIESGO
+  Calcular riesgos:  O(n)
+  Ordenar:          O(n log n)
+  Seleccionar:      O(k)
+  Total: O(n log n)
+
+[SP5] RUTAS CRITICAS
+  Dijkstra:         O((n + m) log n)  Con Max-Heap
+  
+[SP6] CONTENCION
+  Kruskal:          O(m log m)        Con Union-Find
+  Prim:             O((n + m) log n)  Con Heap
+
+[SP7] CLUSTERING
+  Construir Trie:   O(k * L)   k=cepas, L=longitud ADN
+  Búsquedas:        O(L + m)   m=resultados
+
+[SP8] CONSULTAS
+  Construir Hash:   O(n)       n=individuos
+  Búsquedas:        O(1)       Promedio
+  Historial:        O(k)       k=cambios
+
+================================================================================
+NÚMEROS DEL PROYECTO
+================================================================================
+
+DATOS:
+  Población total:           1000 individuos
+  Infectados iniciales:      10 (pacientes cero)
+  Territorios:               20 nodos
+  Conexiones territorios:    30+ aristas
+  Cepas virales:             50 variantes
+  Duración simulación:       60 días
+
+RESULTADOS TÍPICOS:
+  Eventos generados (SP3):   ~10,000
+  Componentes brotes (SP2):  ~8
+  Infectados finales (SP4):  ~166 después de propagación
+  Riesgo total:              ~12,425 unidades
+  Rutas alcanzables (SP5):   ~0-5 de 20 territorios
+
+COMPILACIÓN:
+  Líneas de código:          ~3,000
+  Archivos:                  14 .c + 14 .h + 1 Makefile
+  Tamaño ejecutable:         ~221 KB
+  Warnings:                  11 (no-critical)
+  Errores:                   0
+
+EJECUCIÓN:
+  Tiempo total:              <1 segundo
+  Líneas de output:          ~405 líneas
+  Memoria utilizada:         ~1-2 MB
+  Limpieza de memoria:       ✓ Completa
+
+================================================================================
