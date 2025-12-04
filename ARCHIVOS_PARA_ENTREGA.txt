@@ -1,0 +1,491 @@
+================================================================================
+                    ANALISIS DE ARCHIVOS PARA ENTREGA FINAL
+                        Proyecto BioSim - Estructura Limpia
+================================================================================
+
+FECHA: Diciembre 3, 2025
+PROPOSITO: Definir estructura óptima para presentación y entrega del proyecto
+
+================================================================================
+1. ESTRUCTURA RECOMENDADA PARA ENTREGA
+================================================================================
+
+La estructura limpia debe incluir SOLO lo necesario para:
+  ✓ Compilar el proyecto
+  ✓ Ejecutar correctamente
+  ✓ Documentar adecuadamente
+  ✗ Evitar archivos de prueba/depuración innecesarios
+  ✗ Evitar duplicados de documentación
+
+================================================================================
+2. CLASIFICACION DE ARCHIVOS
+================================================================================
+
+CATEGORIA A: INDISPENSABLES (MANTENER 100%)
+================================================================================
+
+2.1 ARCHIVOS DE CODIGO FUENTE (.c) - 13 archivos OBLIGATORIOS
+
+  ✅ generador.c (8.9 KB)
+     - Main del programa
+     - Coordinador de todas las pruebas
+     - Punto de entrada principal
+     ACCION: MANTENER
+
+  ✅ analisis_datos.c (8.9 KB)
+     - Subproblema 1: Algoritmos de ordenamiento
+     - MergeSort, QuickSort, HeapSort
+     ACCION: MANTENER
+
+  ✅ deteccion_brotes.c (11.11 KB)
+     - Subproblema 2: BFS y DFS
+     - Detección de componentes conectadas
+     ACCION: MANTENER
+
+  ✅ propagacion_temporal.c (11.37 KB)
+     - Subproblema 3: Simulación con Min-Heap
+     - Eventos epidemiológicos
+     ACCION: MANTENER
+
+  ✅ minimizacion_riesgo.c (9.27 KB)
+     - Subproblema 4: Algoritmo Greedy
+     - Estrategias de aislamiento
+     ACCION: MANTENER
+
+  ✅ rutas_criticas.c (12.35 KB)
+     - Subproblema 5: Dijkstra modificado
+     - Rutas de máxima probabilidad
+     ACCION: MANTENER
+
+  ✅ contencion_vacunacion.c (10.01 KB)
+     - Subproblema 6: Kruskal y Prim MST
+     - Árboles de expansión mínima
+     ACCION: MANTENER
+
+  ✅ clustering_cepas.c (7.33 KB)
+     - Subproblema 7: Trie clustering
+     - Agrupación de cepas por prefijo
+     ACCION: MANTENER
+
+  ✅ consultas_rapidas.c (10.19 KB)
+     - Subproblema 8: Hash Table
+     - Búsquedas O(1)
+     ACCION: MANTENER
+
+  ✅ heap.c (3.02 KB)
+     - Estructura auxiliar: Min-Heap y Max-Heap
+     - Usada en Subproblemas 3 y 5
+     ACCION: MANTENER
+
+  ✅ union_find.c (1.75 KB)
+     - Estructura auxiliar: Union-Find
+     - Usada en Subproblema 6
+     ACCION: MANTENER
+
+  ✅ hash_table.c (2.54 KB)
+     - Estructura auxiliar: Tabla Hash
+     - Usada en Subproblema 8
+     ACCION: MANTENER
+
+  ✅ trie.c (3.18 KB)
+     - Estructura auxiliar: Trie
+     - Usada en Subproblema 7
+     ACCION: MANTENER
+
+  TOTAL .c: 13 archivos, ~111 KB de código fuente
+
+2.2 ARCHIVOS DE HEADERS (.h) - 13 archivos OBLIGATORIOS
+
+  ✅ estructuras.h (4.84 KB)
+     - Definiciones de tipos globales
+     - Estructuras principales (Individuo, Territorio, Cepa, etc)
+     ACCION: MANTENER
+
+  ✅ analisis_datos.h (1.52 KB)
+     ACCION: MANTENER
+
+  ✅ deteccion_brotes.h (1.62 KB)
+     ACCION: MANTENER
+
+  ✅ propagacion_temporal.h (1.7 KB)
+     ACCION: MANTENER
+
+  ✅ minimizacion_riesgo.h (1.59 KB)
+     ACCION: MANTENER
+
+  ✅ rutas_criticas.h (1.7 KB)
+     ACCION: MANTENER
+
+  ✅ contencion_vacunacion.h (1.4 KB)
+     ACCION: MANTENER
+
+  ✅ clustering_cepas.h (1.58 KB)
+     ACCION: MANTENER
+
+  ✅ consultas_rapidas.h (1.74 KB)
+     ACCION: MANTENER
+
+  ✅ heap.h (1.42 KB)
+     ACCION: MANTENER
+
+  ✅ union_find.h (1.33 KB)
+     ACCION: MANTENER
+
+  ✅ hash_table.h (1.11 KB)
+     ACCION: MANTENER
+
+  ✅ trie.h (1.16 KB)
+     ACCION: MANTENER
+
+  TOTAL .h: 13 archivos, ~22 KB
+
+2.3 ARCHIVOS DE CONFIGURACION - 1 archivo OBLIGATORIO
+
+  ✅ Makefile (1.67 KB)
+     - Automatización de compilación
+     - Flags de compilación: -Wall -Wextra -std=c99 -g -O2 -lm
+     - Targets: all, clean, rebuild
+     ACCION: MANTENER (MODIFICAR LIGERAMENTE - ver sección 3.2)
+
+  TOTAL: 1 archivo, 1.67 KB
+
+SUBTOTAL CATEGORIA A (INDISPENSABLES): 27 archivos, ~134.67 KB
+
+================================================================================
+
+CATEGORIA B: DOCUMENTACION RECOMENDADA (MANTENER 1-2 principales)
+================================================================================
+
+De los 8 archivos TXT/MD, RECOMENDADO mantener solo 2:
+
+  ✅ PROYECTO_COMPLETADO.md (8.97 KB)
+     - Resumen ejecutivo completo
+     - Tabla de subproblemas y estado
+     - Métricas finales
+     - Bien estructurado para presentación
+     ACCION: MANTENER
+
+  ✅ README.md (SI EXISTE, crear si no está)
+     - Instrucciones de compilación y ejecución
+     - Descripción breve del proyecto
+     - Requisitos
+     ACCION: CREAR si no existe, o MANTENER si existe
+
+  ❌ DOCUMENTACION_COMPLETA.txt (35.7 KB)
+     - Información técnica detallada
+     - Adecuada para documentación del desarrollador
+     - MUY LARGA para presentación
+     ACCION: OPCIONAL (mantener en carpeta aparte "docs")
+
+  ❌ ESTADO_PROYECTO.txt (12.05 KB)
+     - Reporte de estado intermedio
+     - Redundante con PROYECTO_COMPLETADO.md
+     ACCION: ELIMINAR
+
+  ❌ INFRAESTRUCTURA.txt (7.18 KB)
+     - Notas técnicas de infraestructura
+     - Información de desarrollo
+     ACCION: ELIMINAR
+
+  ❌ SUBPROBLEMA_1_COMPLETO.txt (9.04 KB)
+     ACCION: ELIMINAR (información redundante)
+
+  ❌ SUBPROBLEMA_4_COMPLETO.txt (7.76 KB)
+     ACCION: ELIMINAR (información redundante)
+
+  ❌ SUBPROBLEMA_5_COMPLETADO.txt (13.65 KB)
+     ACCION: ELIMINAR (información redundante)
+
+  ❌ salida.txt (13.2 KB)
+     - Resultado antigua de ejecución
+     ACCION: ELIMINAR
+
+  ❌ salida_completa.txt (25.23 KB)
+     - Salida completa de ejecución (muy grande)
+     - Redundante: puede regenerarse ejecutando el programa
+     ACCION: ELIMINAR
+
+SUBTOTAL CATEGORIA B: Mantener 1-2, Eliminar 7
+
+================================================================================
+
+CATEGORIA C: ARCHIVOS COMPILADOS (ELIMINAR O INCLUIR EN .gitignore)
+================================================================================
+
+  ❌ generador.exe (221.36 KB)
+     - Ejecutable compilado
+     - DEBE REGENERARSE con make
+     - Toma mucho espacio
+     - Específico para plataforma (Windows)
+     ACCION: ELIMINAR (regenerar con "make")
+
+  ❌ Posibles archivos .o (object files)
+     - No presentes pero podrían crearse
+     ACCION: ELIMINAR si existen (generados automáticamente)
+
+SUBTOTAL CATEGORIA C: Eliminar todo
+
+================================================================================
+3. ESTRUCTURA FINAL RECOMENDADA
+================================================================================
+
+PROYECTO LIMPIO PARA ENTREGA (33 archivos, ~156.67 KB sin .exe):
+
+BioSim/
+├── README.md                          (Nueva o existente)
+├── Makefile                           ✅ Compilación
+│
+├── CODIGO FUENTE (13 archivos .c)
+│   ├── generador.c                    ✅
+│   ├── analisis_datos.c               ✅
+│   ├── deteccion_brotes.c             ✅
+│   ├── propagacion_temporal.c         ✅
+│   ├── minimizacion_riesgo.c          ✅
+│   ├── rutas_criticas.c               ✅
+│   ├── contencion_vacunacion.c        ✅
+│   ├── clustering_cepas.c             ✅
+│   ├── consultas_rapidas.c            ✅
+│   ├── heap.c                         ✅
+│   ├── union_find.c                   ✅
+│   ├── hash_table.c                   ✅
+│   └── trie.c                         ✅
+│
+├── HEADERS (13 archivos .h)
+│   ├── estructuras.h                  ✅
+│   ├── analisis_datos.h               ✅
+│   ├── deteccion_brotes.h             ✅
+│   ├── propagacion_temporal.h         ✅
+│   ├── minimizacion_riesgo.h          ✅
+│   ├── rutas_criticas.h               ✅
+│   ├── contencion_vacunacion.h        ✅
+│   ├── clustering_cepas.h             ✅
+│   ├── consultas_rapidas.h            ✅
+│   ├── heap.h                         ✅
+│   ├── union_find.h                   ✅
+│   ├── hash_table.h                   ✅
+│   └── trie.h                         ✅
+│
+├── DOCUMENTACION
+│   ├── PROYECTO_COMPLETADO.md         ✅
+│   └── (opcional: docs/ para documentación técnica)
+│
+└── .git/                              ✅ (si usa git)
+
+TOTAL: 32 archivos, ~156.67 KB (comprimible a ~50 KB)
+
+================================================================================
+4. TAREAS PARA LIMPIAR EL PROYECTO
+================================================================================
+
+PASO 1: ELIMINAR ARCHIVOS INNECESARIOS
+
+Ejecutar en PowerShell:
+```
+cd "c:\Users\comis\Documents\Proyecto DAA\BioSim"
+
+# Eliminar archivos compilados
+Remove-Item -Path "generador.exe" -Force
+
+# Eliminar documentación redundante
+Remove-Item -Path "ESTADO_PROYECTO.txt" -Force
+Remove-Item -Path "INFRAESTRUCTURA.txt" -Force
+Remove-Item -Path "SUBPROBLEMA_1_COMPLETO.txt" -Force
+Remove-Item -Path "SUBPROBLEMA_4_COMPLETO.txt" -Force
+Remove-Item -Path "SUBPROBLEMA_5_COMPLETADO.txt" -Force
+Remove-Item -Path "salida.txt" -Force
+Remove-Item -Path "salida_completa.txt" -Force
+```
+
+Archivos a eliminar (9 total): 129.88 KB
+
+PASO 2: ORGANIZAR DOCUMENTACION TECNICA (OPCIONAL)
+
+Si desea mantener documentación técnica detallada:
+```
+# Crear carpeta docs
+New-Item -ItemType Directory -Path "docs" -Force
+
+# Mover documentación técnica (opcional)
+Move-Item -Path "DOCUMENTACION_COMPLETA.txt" -Destination "docs/" -Force
+```
+
+PASO 3: CREAR/ACTUALIZAR README.md
+
+Si no existe README.md, crear con estructura:
+- Descripción del proyecto
+- Requisitos de compilación
+- Instrucciones de compilación (make)
+- Instrucciones de ejecución
+- Estructura del proyecto
+
+PASO 4: CREAR .gitignore (si usa versionamiento)
+
+Contenido recomendado:
+```
+# Archivos compilados
+*.exe
+*.o
+*.a
+
+# Archivos generados en ejecución
+salida.txt
+salida_completa.txt
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+```
+
+PASO 5: VERIFICAR CONTENIDO FINAL
+
+```
+# Ver estructura final
+Get-ChildItem -Recurse | Where-Object {-not $_.PSIsContainer} | 
+  Measure-Object -Property Length -Sum |
+  Select-Object @{Name="Archivos";Expression={$_.Count}},
+                @{Name="Tamaño(MB)";Expression={[math]::Round($_.Sum/1MB, 2)}}
+```
+
+================================================================================
+5. CHECKLIST PARA ENTREGA FINAL
+================================================================================
+
+ANTES DE ENTREGAR, VERIFICAR:
+
+CODIGO FUENTE:
+  ☐ 13 archivos .c presentes y sin errores
+  ☐ 13 archivos .h presentes
+  ☐ Compilación sin errores: "make clean && make"
+  ☐ Ejecutable genera correctamente: "./generador.exe"
+  ☐ Salida muestra los 8 subproblemas
+
+DOCUMENTACION:
+  ☐ README.md actualizado con instrucciones claras
+  ☐ PROYECTO_COMPLETADO.md presente y actualizado
+  ☐ Todos los archivos .c tienen comentarios de funciones principales
+  ☐ estructuras.h documentado con tipos principales
+
+LIMPIEZA:
+  ☐ Eliminados: .exe, salida*.txt, ESTADO_PROYECTO.txt, etc
+  ☐ No hay archivos .o sueltos
+  ☐ No hay archivos de debug (salvo si se requieren)
+  ☐ Tamaño total <200 KB (sin .git)
+
+COMPILACION:
+  ☐ Compilar desde cero: "make clean && make"
+  ☐ 0 errores en compilación
+  ☐ Máximo 11 warnings (funciones no usadas - aceptable)
+
+EJECUCION:
+  ☐ Ejecutar: "./generador.exe"
+  ☐ 334 líneas de salida
+  ☐ 8 subproblemas completos
+  ☐ "Memoria liberada correctamente" al final
+
+VERSIONAMIENTO (si usa git):
+  ☐ .gitignore configurado correctamente
+  ☐ Último commit documenta la entrega
+  ☐ No hay .exe en git (si ya fue añadido, usar git rm)
+
+================================================================================
+6. COMPARATIVA TAMAÑO
+================================================================================
+
+ANTES DE LIMPIAR:
+  Total: 46 archivos
+  Tamaño: ~433 KB
+  Innecesarios: ~130 KB (30%)
+
+DESPUES DE LIMPIAR:
+  Total: 32 archivos
+  Tamaño: ~157 KB
+  Reducción: 63.7% del tamaño original
+
+================================================================================
+7. RECOMENDACIONES FINALES
+================================================================================
+
+✓ PRIORIDAD ALTA (HACER YA):
+  1. Eliminar archivos .exe
+  2. Eliminar archivos salida*.txt duplicados
+  3. Eliminar ESTADO_PROYECTO.txt, INFRAESTRUCTURA.txt, SUBPROBLEMA_*.txt
+  4. Verificar que Makefile funciona correctamente
+  5. Crear/actualizar README.md
+
+✓ PRIORIDAD MEDIA (OPCIONAL):
+  1. Crear carpeta "docs" para documentación técnica
+  2. Mover DOCUMENTACION_COMPLETA.txt a docs/
+  3. Crear .gitignore si usa git
+
+✓ PRIORIDAD BAJA (FUTURO):
+  1. Agregar más comentarios al código
+  2. Crear ejemplos de uso
+  3. Agregar makefile targets adicionales (test, valgrind, etc)
+
+================================================================================
+8. COMANDO RAPIDO PARA LIMPIAR TODO
+================================================================================
+
+Ejecutar en PowerShell (una línea):
+
+```powershell
+cd "c:\Users\comis\Documents\Proyecto DAA\BioSim"; 
+Remove-Item -Path @("generador.exe","ESTADO_PROYECTO.txt","INFRAESTRUCTURA.txt","SUBPROBLEMA_1_COMPLETO.txt","SUBPROBLEMA_4_COMPLETO.txt","SUBPROBLEMA_5_COMPLETADO.txt","salida.txt","salida_completa.txt") -Force -ErrorAction SilentlyContinue;
+Write-Host "Limpieza completada. Archivos restantes:";
+(Get-ChildItem -File).Count
+```
+
+================================================================================
+9. ESTRUCTURA MINIMA (ULTRA LIMPIA)
+================================================================================
+
+Si quiere ULTRA minimális (no recomendado, pero posible):
+  - 13 archivos .c
+  - 13 archivos .h
+  - Makefile
+  - README.md
+
+TOTAL: 28 archivos, ~135 KB
+RESULTADO: Compilable y ejecutable, pero sin documentación de resultados
+
+NO RECOMENDADO PARA PRESENTACIÓN (falta documentación de logros)
+
+================================================================================
+                              RESUMEN EJECUTIVO
+================================================================================
+
+MANTENGA SIEMPRE (26 archivos):
+  ✅ 13 archivos .c (código)
+  ✅ 13 archivos .h (headers)
+  ✅ 1 Makefile
+
+MANTENGA PARA PRESENTACION (1 archivo):
+  ✅ 1 PROYECTO_COMPLETADO.md
+
+ELIMINE (9 archivos, 129.88 KB):
+  ❌ generador.exe
+  ❌ ESTADO_PROYECTO.txt
+  ❌ INFRAESTRUCTURA.txt
+  ❌ SUBPROBLEMA_1_COMPLETO.txt
+  ❌ SUBPROBLEMA_4_COMPLETO.txt
+  ❌ SUBPROBLEMA_5_COMPLETADO.txt
+  ❌ salida.txt
+  ❌ salida_completa.txt
+  ❌ Cualquier archivo .o
+
+ARCHIVO FINAL RECOMENDADO:
+  BioSim.zip (~50 KB comprimido)
+  Contiene 27 archivos de código y documentación mínima
+
+================================================================================
+
+Documento generado: Diciembre 3, 2025
+Proyecto: BioSim - Análisis y Diseño de Algoritmos
+Status: Listo para entrega final limpia
+
+================================================================================

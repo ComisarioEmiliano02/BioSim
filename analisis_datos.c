@@ -180,18 +180,18 @@ void test_analisis_datos(Individuo *poblacion, int num_individuos) {
   // HeapSort
   heap_sort(copia_heap, num_individuos, ORDENAR_POR_RIESGO);
   
-  printf("MergeSort - Primeros 5 individuos por riesgo:\n");
-  for (int i = 0; i < 5 && i < num_individuos; i++) {
+  printf("MergeSort - Últimos 5 individuos por riesgo (MAYOR RIESGO):\n");
+  for (int i = num_individuos - 5; i < num_individuos && i >= 0; i++) {
     printf("  %s: riesgo=%d\n", copia_merge[i].nombre, copia_merge[i].riesgo);
   }
   
-  printf("\nQuickSort - Primeros 5 individuos por riesgo:\n");
-  for (int i = 0; i < 5 && i < num_individuos; i++) {
+  printf("\nQuickSort - Últimos 5 individuos por riesgo (MAYOR RIESGO):\n");
+  for (int i = num_individuos - 5; i < num_individuos && i >= 0; i++) {
     printf("  %s: riesgo=%d\n", copia_quick[i].nombre, copia_quick[i].riesgo);
   }
   
-  printf("\nHeapSort - Primeros 5 individuos por riesgo:\n");
-  for (int i = 0; i < 5 && i < num_individuos; i++) {
+  printf("\nHeapSort - Últimos 5 individuos por riesgo (MAYOR RIESGO):\n");
+  for (int i = num_individuos - 5; i < num_individuos && i >= 0; i++) {
     printf("  %s: riesgo=%d\n", copia_heap[i].nombre, copia_heap[i].riesgo);
   }
   

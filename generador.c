@@ -117,11 +117,12 @@ void agregar_individuo_a_territorio(Territorio *t, Individuo *ind) {
 void inicializar_poblacion() {
   poblacion = (Individuo *)malloc(NUM_INDIVIDUOS_TOTAL * sizeof(Individuo));
 
+  // Primero, crear todos los individuos como sanos
   for (int i = 0; i < NUM_INDIVIDUOS_TOTAL; i++) {
     poblacion[i].id = i;
     sprintf(poblacion[i].nombre, "Individuo_%d", i);
     poblacion[i].territorio_id = rand() % NUM_TERRITORIOS;
-    poblacion[i].riesgo = rand() % 100; // 0-99
+    poblacion[i].riesgo = rand() % 50;  // Riesgo bajo: 0-49 (SANO)
     poblacion[i].estado = SANO;
     poblacion[i].tiempo_infeccion = 0;
 
@@ -130,13 +131,14 @@ void inicializar_poblacion() {
                                    &poblacion[i]);
   }
 
-  // Infectar Pacientes Cero
+  // Infectar Pacientes Cero con RIESGO ALTO
   for (int i = 0; i < NUM_PACIENTES_CERO; i++) {
     int idx = rand() % NUM_INDIVIDUOS_TOTAL;
     // Asegurar que no repetimos (simple check omitido por brevedad,
     // probabilidad baja)
     poblacion[idx].estado = INFECTADO;
     poblacion[idx].tiempo_infeccion = 1;
+    poblacion[idx].riesgo = 50 + (rand() % 50);  // Riesgo alto: 50-99 (INFECTADO)
   }
   printf("Generada poblacion de %d individuos con %d infectados iniciales.\n",
          NUM_INDIVIDUOS_TOTAL, NUM_PACIENTES_CERO);
