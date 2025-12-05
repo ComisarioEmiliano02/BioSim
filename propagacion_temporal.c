@@ -217,21 +217,21 @@ void test_propagacion_temporal(Territorio *territorios, int num_territorios,
   printf("Territorios: %d\n", num_territorios);
   printf("Cepas: %d\n", num_cepas);
   
-  int dias = 30;
+  int dias = 60;
   ResultadoPropagacion *resultado = simular_propagacion_temporal(
     territorios, num_territorios, poblacion, num_poblacion, cepas, num_cepas, dias);
   
-  printf("\n--- RESULTADOS DE SIMULACION (30 DIAS) ---\n");
+  printf("\n--- RESULTADOS DE SIMULACION (60 DIAS) ---\n");
   printf("Total de eventos procesados: %d\n", resultado->num_eventos);
   printf("Infectados totales: %d\n", resultado->total_infectados);
   printf("Recuperados totales: %d\n", resultado->total_recuperados);
   printf("Muertos totales: %d\n", resultado->total_muertos);
   printf("Dias simulados: %d\n", resultado->dias_simulados);
   
-  printf("\nProgresion por dia (muestra cada 5 dias):\n");
+  printf("\nProgresion por dia (muestra cada 10 dias):\n");
   printf("  Dia | Infectados | Recuperados | Muertos\n");
   printf("------+------------+-------------+--------\n");
-  for (int d = 0; d <= dias && d <= resultado->dias_simulados; d += 5) {
+  for (int d = 0; d <= dias && d <= resultado->dias_simulados; d += 10) {
     printf("  %3d | %10d | %11d | %7d\n",
            d,
            resultado->infectados_por_dia[d],
