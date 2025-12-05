@@ -97,7 +97,8 @@ void quick_sort(Individuo *array, int izq, int der, CriterioOrdenamiento criteri
 }
 
 // HeapSort: O(n log n) garantizado
-// COMENTARIO Big-O: Construcción del heap O(n) + extracción de n elementos O(n log n) = O(n log n) total
+// COMENTARIO Big-O: Construcción del heap O(n) + 
+// extracción de n elementos O(n log n) = O(n log n) total
 static int padre_idx(int i) { return (i - 1) / 2; }
 static int hijo_izq_idx(int i) { return 2 * i + 1; }
 static int hijo_der_idx(int i) { return 2 * i + 2; }

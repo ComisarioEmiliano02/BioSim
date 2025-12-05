@@ -1,0 +1,437 @@
+================================================================================
+LISTA COMPLETA DE STRUCTS - BIOSIM
+================================================================================
+
+PROYECTO: BioSim - Simulador Algorítmico de Epidemias
+ARCHIVO PRINCIPAL: estructuras.h (+ headers específicos)
+TOTAL STRUCTS: 20 tipos de datos
+
+================================================================================
+CATEGORIA 1: STRUCTS PRINCIPALES (Núcleo del Sistema)
+================================================================================
+
+1. EstadoSalud (ENUM)
+   ────────────────────────────────────────────────────────────────
+   typedef enum { SANO, INFECTADO, RECUPERADO } EstadoSalud;
+   
+   Descripción: Estados posibles de salud de un individuo
+   Valores: 
+     - SANO (0): No infectado
+     - INFECTADO (1): Portador del virus
+     - RECUPERADO (2): Ya tuvo virus, ahora inmune o muerto
+   Usado por: Individuo, Cola, EventoInfeccion
+
+───────────────────────────────────────────────────────────────────────────────
+
+2. Individuo
+   ────────────────────────────────────────────────────────────────
+   typedef struct {
+     int id;                      // ID único (0-999)
+     char nombre[MAX_NOMBRE];     // "Individuo_0000" a "Individuo_0999"
+     int territorio_id;           // Territorio donde reside
+     int riesgo;                  // 0-99 (bajo sanos, alto infectados)
+     EstadoSalud estado;          // SANO, INFECTADO, RECUPERADO
+     int tiempo_infeccion;        // Días desde infección (0 si sano)
+   } Individuo;
+   
+   Descripción: Representa una persona en la población
+   Tamaño: ~130 bytes
+   Cantidad: 1000 en el proyecto
+   Usado por: 
+     - Array poblacion[] en generador.c
+     - Territorios (lista enlazada)
+     - Resultados de subproblemas
+
+───────────────────────────────────────────────────────────────────────────────
+
+3. NodoIndividuo
+   ────────────────────────────────────────────────────────────────
+   typedef struct NodoIndividuo {
+     Individuo *data;           // Puntero al individuo
+     struct NodoIndividuo *siguiente;  // Siguiente en la lista
+   } NodoIndividuo;
+   
+   Descripción: Nodo de lista enlazada para individuos
+   Complejidad: O(1) inserción, O(n) búsqueda
+   Usado por: Territorio (lista de individuos por territorio)
+
+───────────────────────────────────────────────────────────────────────────────
+
+4. Territorio
+   ────────────────────────────────────────────────────────────────
+   typedef struct {
+     int id;                     // ID único (0-19)
+     char nombre[MAX_NOMBRE];    // "Territorio_0" a "Territorio_19"
+     NodoIndividuo *individuos;  // Lista enlazada de individuos
+     int num_individuos;         // Contador de individuos
+   } Territorio;
+   
+   Descripción: Región geográfica donde viven los individuos
+   Cantidad: 20 territorios
+   Conexiones: 30+ aristas a otros territorios
+   Usado por: 
+     - Array territorios[] en generador.c
+     - Grafo de territorios
+     - Subproblemas 2, 3, 5
+
+───────────────────────────────────────────────────────────────────────────────
+
+5. Cepa
+   ────────────────────────────────────────────────────────────────
+   typedef struct {
+     int id;                    // ID único (0-49)
+     char nombre_adn[MAX_ADN];  // Cadena ADN: "ACGTACGTACGT..."
+     float beta;                // Tasa de propagación (0.1-0.9)
+     float letalidad;           // Tasa de mortalidad (0.01-0.3)
+     float gamma;               // Tasa de recuperación (0.05-0.5)
+   } Cepa;
+   
+   Descripción: Variante viral con propiedades epidemiológicas
+   Cantidad: 50 cepas diferentes
+   Parámetros epidemiológicos:
+     - beta: Probabilidad de transmisión por contacto
+     - letalidad: Probabilidad de muerte si infectado
+     - gamma: Velocidad de recuperación
+   Usado por: 
+     - Subproblema 3 (propagación)
+     - Subproblema 5 (rutas)
+     - Subproblema 7 (clustering)
+
+───────────────────────────────────────────────────────────────────────────────
+
+6. NodoAdyacencia
+   ────────────────────────────────────────────────────────────────
+   typedef struct NodoAdyacencia {
+     int destino_id;    // ID del nodo destino (territorio o individuo)
+     float peso;        // Peso/distancia/probabilidad
+     struct NodoAdyacencia *siguiente;  // Siguiente en lista
+   } NodoAdyacencia;
+   
+   Descripción: Nodo de lista de adyacencia para grafo
+   Usado por: 
+     - Grafo (lista de adyacencia)
+     - GrafoContactos
+
+───────────────────────────────────────────────────────────────────────────────
+
+7. Grafo
+   ────────────────────────────────────────────────────────────────
+   typedef struct {
+     int num_nodos;                    // 20 (territorios)
+     NodoAdyacencia **listas;          // Array de listas adyacencia
+   } Grafo;
+   
+   Descripción: Grafo no dirigido de territorios
+   Estructura: Lista de adyacencia
+   Nodos: 20 territorios
+   Aristas: 30+ conexiones
+   Usado por:
+     - Subproblema 2 (detección brotes territorios)
+     - Subproblema 5 (rutas críticas)
+     - Subproblema 6 (MST vacunación)
+
+================================================================================
+CATEGORIA 2: STRUCTS DE ESTRUCTURAS DE DATOS AUXILIARES
+================================================================================
+
+8. NodoHash
+   ────────────────────────────────────────────────────────────────
+   typedef struct NodoHash {
+     int individuo_id;          // Clave (ID del individuo)
+     Individuo *data;           // Valor (puntero al individuo)
+     struct NodoHash *siguiente; // Siguiente (colisión)
+   } NodoHash;
+   
+   Descripción: Nodo de tabla hash con encadenamiento
+   Manejo de colisiones: Encadenamiento (linked list)
+   Usado por: TablaHash (Subproblema 8)
+
+───────────────────────────────────────────────────────────────────────────────
+
+9. TablaHash
+   ────────────────────────────────────────────────────────────────
+   typedef struct {
+     NodoHash **tabla;   // Array de 1009 buckets (número primo)
+     int size;           // Tamaño de la tabla (1009)
+     int elementos;      // Cantidad de elementos almacenados
+   } TablaHash;
+   
+   Descripción: Tabla hash para búsquedas O(1) de individuos
+   Tamaño: 1009 (número primo para mejor distribución)
+   Complejidad: O(1) promedio, O(n) peor caso
+   Usado por: Subproblema 8 (consultas rápidas)
+
+───────────────────────────────────────────────────────────────────────────────
+
+10. NodoTrie
+    ────────────────────────────────────────────────────────────────
+    typedef struct NodoTrie {
+      struct NodoTrie *hijos[ALPHABET_SIZE];  // 4 hijos (A,C,G,T)
+      bool es_final;      // ¿Es final de una cepa?
+      int cepa_id;        // ID de la cepa si es final
+    } NodoTrie;
+    
+    Descripción: Nodo de árbol Trie para ADN
+    Alfabeto: 4 caracteres (A, C, G, T)
+    Usado por: Trie (Subproblema 7)
+
+───────────────────────────────────────────────────────────────────────────────
+
+11. Trie
+    ────────────────────────────────────────────────────────────────
+    typedef struct {
+      NodoTrie *raiz;  // Raíz del árbol Trie
+    } Trie;
+    
+    Descripción: Árbol de prefijos para clustering de cepas
+    Complejidad búsqueda: O(L) donde L = longitud del ADN
+    Complejidad construcción: O(k*L) donde k = número de cepas
+    Usado por: Subproblema 7 (clustering de cepas)
+
+───────────────────────────────────────────────────────────────────────────────
+
+12. ElementoHeap
+    ────────────────────────────────────────────────────────────────
+    typedef struct {
+      int individuo_id;   // ID del elemento
+      int prioridad;      // Valor de prioridad (tiempo, riesgo, etc)
+      void *datos;        // Datos genéricos
+    } ElementoHeap;
+    
+    Descripción: Elemento genérico para heap
+    Usado por: Heap (Subproblemas 3, 5)
+
+───────────────────────────────────────────────────────────────────────────────
+
+13. Heap
+    ────────────────────────────────────────────────────────────────
+    typedef struct {
+      ElementoHeap *elementos;   // Array dinámico
+      int tamano;                // Elementos actuales
+      int capacidad;             // Capacidad total
+      bool es_min_heap;          // true=MinHeap, false=MaxHeap
+    } Heap;
+    
+    Descripción: Heap binario (Min o Max)
+    Complejidad: 
+      - Inserción: O(log n)
+      - Extracción: O(log n)
+      - Construcción: O(n)
+    Usado por:
+      - Subproblema 3 (Min-Heap para eventos)
+      - Subproblema 5 (Max-Heap para rutas)
+
+───────────────────────────────────────────────────────────────────────────────
+
+14. UnionFind
+    ────────────────────────────────────────────────────────────────
+    typedef struct {
+      int *padre;          // Array de padres (para buscar conjunto)
+      int *rango;          // Array de rangos (optimización)
+      int num_elementos;   // Cantidad de elementos
+    } UnionFind;
+    
+    Descripción: Estructura Union-Find con compresión de camino
+    Complejidad: O(α(n)) casi O(1) amortizado
+    Usado por: Subproblema 6 (Kruskal MST)
+
+───────────────────────────────────────────────────────────────────────────────
+
+15. NodoFila
+    ────────────────────────────────────────────────────────────────
+    typedef struct NodoFila {
+      int individuo_id;              // ID del individuo
+      struct NodoFila *siguiente;    // Siguiente en la cola
+    } NodoFila;
+    
+    Descripción: Nodo de cola FIFO
+    Usado por: Cola (Subproblema 2 BFS)
+
+───────────────────────────────────────────────────────────────────────────────
+
+16. Cola
+    ────────────────────────────────────────────────────────────────
+    typedef struct {
+      NodoFila *frente;    // Inicio de la cola
+      NodoFila *cola;      // Final de la cola
+      int tamano;          // Número de elementos
+    } Cola;
+    
+    Descripción: Cola FIFO para BFS
+    Complejidad: O(1) encolar, O(1) desencolar
+    Usado por: Subproblema 2 (BFS)
+
+───────────────────────────────────────────────────────────────────────────────
+
+17. NodoContacto
+    ────────────────────────────────────────────────────────────────
+    typedef struct NodoContacto {
+      int individuo_id;                // ID del individuo contacto
+      float probabilidad_contacto;     // Probabilidad de transmisión
+      struct NodoContacto *siguiente;  // Siguiente contacto
+    } NodoContacto;
+    
+    Descripción: Nodo de lista de contactos entre individuos
+    Usado por: GrafoContactos (Subproblema 2)
+
+───────────────────────────────────────────────────────────────────────────────
+
+18. GrafoContactos
+    ────────────────────────────────────────────────────────────────
+    typedef struct {
+      int num_individuos;         // 1000
+      NodoContacto **listas;      // Array de listas de adyacencia
+    } GrafoContactos;
+    
+    Descripción: Grafo de contactos entre individuos
+    Nodos: 1000 individuos
+    Aristas: Contactos con probabilidad de transmisión
+    Usado por: Subproblema 2 (detección de brotes)
+
+================================================================================
+CATEGORIA 3: STRUCTS DE EVENTOS Y RESULTADOS
+================================================================================
+
+19. EventoInfeccion
+    ────────────────────────────────────────────────────────────────
+    typedef struct {
+      int tiempo;            // Día del evento (0-60)
+      int individuo_id;      // Quién se infecta
+      int individuo_origen;  // Quién lo infectó (-1 si inicial)
+      int territorio_id;     // Dónde ocurre
+      int cepa_id;           // Cepa viral involucrada
+      float probabilidad;    // Probabilidad de transmisión
+    } EventoInfeccion;
+    
+    Descripción: Evento de transmisión de virus
+    Usado por: Subproblema 3 (propagación temporal)
+    Cantidad típica: 10,000 eventos por simulación
+
+───────────────────────────────────────────────────────────────────────────────
+
+20. ResultadoPropagacion
+    ────────────────────────────────────────────────────────────────
+    typedef struct {
+      int total_infectados;        // Total final de infectados
+      int total_recuperados;       // Total final de recuperados
+      int total_muertos;           // Total final de muertos
+      int dias_simulados;          // 60 días
+      int num_eventos;             // ~10,000 eventos
+      int *infectados_por_dia;     // Array[61] con infectados/día
+      int *recuperados_por_dia;    // Array[61] con recuperados/día
+      int *muertos_por_dia;        // Array[61] con muertos/día
+    } ResultadoPropagacion;
+    
+    Descripción: Resultado de simulación de 60 días
+    Usado por: Subproblema 3
+
+================================================================================
+CATEGORIA 4: STRUCTS DE RESULTADOS DE SUBPROBLEMAS
+================================================================================
+
+21. ResultadoAislamiento
+    ────────────────────────────────────────────────────────────────
+    typedef struct {
+      int *individuos_a_aislar;  // Array de IDs a aislar
+      int cantidad;              // Cantidad a aislar
+      float riesgo_reducido;     // Riesgo que se reduce
+    } ResultadoAislamiento;
+    
+    Descripción: Resultado del Subproblema 4
+    Usado por: Minimización de riesgo (aislamiento)
+
+───────────────────────────────────────────────────────────────────────────────
+
+22. ResultadoDeteccionBrotes
+    ────────────────────────────────────────────────────────────────
+    typedef struct {
+      int *componentes;     // Array: individuo_id → componente_id
+      int num_componentes;  // Cantidad de componentes
+      int num_infectados_por_componente[1000];  // Infectados por componente
+    } ResultadoDeteccionBrotes;
+    
+    Descripción: Resultado del Subproblema 2
+    Complejidad: O(V+E) para generar
+    Típicamente: 8 componentes detectadas
+
+───────────────────────────────────────────────────────────────────────────────
+
+23. RutaCritica
+    ────────────────────────────────────────────────────────────────
+    typedef struct {
+      int *ruta;               // Array de territorios en la ruta
+      int longitud_ruta;       // Cantidad de saltos
+      float probabilidad_total; // Probabilidad acumulada
+    } RutaCritica;
+    
+    Descripción: Resultado del Subproblema 5
+    Algoritmo: Dijkstra modificado (Max-Heap)
+
+───────────────────────────────────────────────────────────────────────────────
+
+24. AristaTerritorios
+    ────────────────────────────────────────────────────────────────
+    typedef struct {
+      int territorio_1;   // Territorio origen
+      int territorio_2;   // Territorio destino
+      float peso;         // Peso de la arista
+    } AristaTerritorios;
+    
+    Descripción: Arista entre territorios
+    Usado por: ResultadoMST
+
+───────────────────────────────────────────────────────────────────────────────
+
+25. ResultadoMST
+    ────────────────────────────────────────────────────────────────
+    typedef struct {
+      AristaTerritorios *aristas_mst;  // Array de aristas MST
+      int num_aristas;                  // Cantidad de aristas
+      float peso_total;                 // Peso total del MST
+    } ResultadoMST;
+    
+    Descripción: Árbol de Expansión Mínima (Subproblema 6)
+    Algoritmos: Kruskal o Prim
+    Complejidad: O(m log m) o O((n+m) log n)
+
+───────────────────────────────────────────────────────────────────────────────
+
+26. RegistroHistorial
+    ────────────────────────────────────────────────────────────────
+    typedef struct {
+      int individuo_id;           // ID del individuo
+      char historial[1000];       // Historial de cambios
+      int cambios_registrados;    // Cantidad de cambios
+    } RegistroHistorial;
+    
+    Descripción: Registro de cambios de estado (Subproblema 8)
+
+================================================================================
+RESUMEN Y ESTADISTICAS
+================================================================================
+
+TOTAL DE STRUCTS: 26 tipos de datos
+
+CLASIFICACION:
+  • Structs Principales: 7 (Individuo, Territorio, Cepa, Grafo, etc.)
+  • Auxiliares Genéricas: 11 (Nodos, Heap, Hash, Trie, etc.)
+  • Eventos: 1 (EventoInfeccion)
+  • Resultados: 7 (ResultadoXXX)
+
+TAMAÑO APROXIMADO EN MEMORIA:
+  • 1000 Individuos: 130 KB
+  • 20 Territorios + listas: 50 KB
+  • 50 Cepas: 5 KB
+  • Grafo de territorios: 10 KB
+  • Tabla Hash: 40 KB
+  • Estructuras diversas: 30 KB
+  TOTAL: ~265 KB (sin contar datos dinámicos)
+
+COMPLEJIDADES ASOCIADAS:
+  • Búsqueda Hash: O(1) promedio
+  • Operaciones Heap: O(log n)
+  • BFS/DFS: O(V+E)
+  • Union-Find: O(α(n)) ≈ O(1)
+  • Trie búsqueda: O(L)
+
+================================================================================

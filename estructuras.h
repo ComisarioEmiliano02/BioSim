@@ -13,7 +13,7 @@
 // --- Enums ---
 typedef enum { SANO, INFECTADO, RECUPERADO } EstadoSalud;
 
-// --- Forward Declarations ---
+// --- Declaración directa ---
 struct NodoIndividuo; // Para la lista de individuos en Territorio
 
 // --- Estructuras Principales ---

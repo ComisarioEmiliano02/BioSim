@@ -1,0 +1,298 @@
+================================================================================
+DIAGRAMA DE RELACIONES ENTRE STRUCTS
+================================================================================
+
+PROYECTO: BioSim
+VISTA: Cómo se conectan y usan los structs
+
+================================================================================
+ARBOL DE DEPENDENCIAS
+================================================================================
+
+                              EstadoSalud (ENUM)
+                                    ↓
+                              Individuo ←─┐
+                                ↓   ↓     │
+                    NodoIndividuo ┘   └─ Cepa
+                         ↓              ↓
+                    Territorio    EventoInfeccion
+                         ↓              ↓
+                    NodoAdyacencia     Heap ←─ ElementoHeap
+                         ↓              
+                       Grafo ←─┐    NodoFila
+                               │       ↓
+                    NodoContacto → Cola
+                         ↓
+                    GrafoContactos
+                    
+                    NodoTrie ← Trie (para Cepa ADN)
+                    NodoHash ← TablaHash (para Individuo)
+                    UnionFind (para territorios Kruskal)
+
+================================================================================
+ESTRUCTURA DE RELACIONES POR SUBPROBLEMA
+================================================================================
+
+SUBPROBLEMA 1: ANALISIS DE DATOS
+├─ Entrada: Individuo[] (1000)
+├─ Structs usados: ElementoHeap (para HeapSort)
+└─ Salida: Individuos ordenados
+   (Interno, sin struct resultado)
+
+────────────────────────────────────────────────────────────────────────────────
+
+SUBPROBLEMA 2: DETECCION DE BROTES
+├─ Entrada: Territorio[], Individuo[]
+├─ Structs usados:
+│  ├─ Grafo (territorios conectados)
+│  ├─ GrafoContactos (individuos contactos)
+│  ├─ Cola (para BFS)
+│  └─ NodoContacto
+├─ Salida: ResultadoDeteccionBrotes
+│  └─ int *componentes (mapeo de componentes)
+
+────────────────────────────────────────────────────────────────────────────────
+
+SUBPROBLEMA 3: PROPAGACION TEMPORAL
+├─ Entrada: Territorio[], Individuo[], Cepa[]
+├─ Structs usados:
+│  ├─ EventoInfeccion (miles de eventos)
+│  └─ Heap (Min-Heap para ordenar eventos)
+├─ Salida: ResultadoPropagacion
+│  ├─ int total_infectados
+│  ├─ int total_recuperados
+│  ├─ int total_muertos
+│  └─ int *infectados_por_dia[61]
+└─ Nota: Modifica estados en Individuo[]
+
+────────────────────────────────────────────────────────────────────────────────
+
+SUBPROBLEMA 4: MINIMIZACION DE RIESGO
+├─ Entrada: Individuo[] (con propagación)
+├─ Structs usados: (interno, solo comparación)
+├─ Salida: ResultadoAislamiento
+│  ├─ int *individuos_a_aislar (IDs)
+│  ├─ int cantidad
+│  └─ float riesgo_reducido
+└─ Algoritmo: Greedy con ordenamiento
+
+────────────────────────────────────────────────────────────────────────────────
+
+SUBPROBLEMA 5: RUTAS CRITICAS
+├─ Entrada: Grafo (territorios), Cepa[]
+├─ Structs usados:
+│  ├─ Grafo (lista adyacencia territorios)
+│  ├─ Heap (Max-Heap para Dijkstra)
+│  └─ AristaTerritorios
+├─ Salida: RutaCritica[]
+│  ├─ int *ruta (array de territorios)
+│  ├─ int longitud_ruta
+│  └─ float probabilidad_total
+└─ Algoritmo: Dijkstra modificado
+
+────────────────────────────────────────────────────────────────────────────────
+
+SUBPROBLEMA 6: CONTENCION (VACUNACION)
+├─ Entrada: Grafo (territorios)
+├─ Structs usados:
+│  ├─ Grafo (conexiones entre territorios)
+│  ├─ UnionFind (para Kruskal) O AristaTerritorios
+│  └─ Heap (para Prim)
+├─ Salida: ResultadoMST
+│  ├─ AristaTerritorios *aristas_mst
+│  ├─ int num_aristas
+│  └─ float peso_total
+└─ Algoritmos: Kruskal (Union-Find) o Prim (Heap)
+
+────────────────────────────────────────────────────────────────────────────────
+
+SUBPROBLEMA 7: CLUSTERING DE CEPAS
+├─ Entrada: Cepa[] (50)
+├─ Structs usados:
+│  ├─ Trie (árbol de prefijos para ADN)
+│  └─ NodoTrie
+├─ Salida: GrupoVariantes[] (struct interno)
+│  ├─ int *cepas_grupo
+│  ├─ int cantidad
+│  └─ char prefijo_comun
+└─ Algoritmo: Trie búsqueda de prefijos
+
+────────────────────────────────────────────────────────────────────────────────
+
+SUBPROBLEMA 8: CONSULTAS RAPIDAS
+├─ Entrada: Individuo[], Territorio[]
+├─ Structs usados:
+│  ├─ TablaHash (tabla hash para búsqueda)
+│  └─ NodoHash
+├─ Salida: RegistroHistorial
+│  ├─ int individuo_id
+│  ├─ char historial[1000]
+│  └─ int cambios_registrados
+└─ Complejidad: O(1) promedio
+
+================================================================================
+FLUJO DE DATOS ENTRE STRUCTS
+================================================================================
+
+INICIO
+  ↓
+Generador crea: Individuo[], Territorio[], Cepa[], Grafo
+  ↓
+SP1: Individuo[] → (sin struct resultado)
+  ├─ Usa: ElementoHeap para HeapSort
+  └─ Salida: Ranking visual
+  ↓
+SP2: Territorio[] + Individuo[] → ResultadoDeteccionBrotes
+  ├─ Crea: GrafoContactos (lista adyacencia)
+  ├─ Usa: Cola para BFS
+  └─ Salida: int *componentes (mapping)
+  ↓
+SP3: Territorio[] + Individuo[] + Cepa[] → ResultadoPropagacion
+  ├─ Crea: EventoInfeccion[] (~10,000)
+  ├─ Usa: Heap (Min-Heap) para ordenar
+  ├─ Modifica: Individuo[].estado, .riesgo
+  └─ Salida: Estadísticas por día
+  ↓
+SP4: Individuo[] → ResultadoAislamiento
+  ├─ Entrada: Poblacion post-propagación
+  ├─ Usa: (interno, sin struct)
+  └─ Salida: IDs a aislar + riesgo reducido
+  ↓
+SP5: Grafo + Cepa[] → RutaCritica[]
+  ├─ Usa: Heap (Max-Heap para Dijkstra)
+  └─ Salida: Rutas de probabilidad máxima
+  ↓
+SP6: Grafo → ResultadoMST
+  ├─ Usa: UnionFind (Kruskal) O Heap (Prim)
+  ├─ Crea: AristaTerritorios[]
+  └─ Salida: MST para vacunación
+  ↓
+SP7: Cepa[] → GrupoVariantes[]
+  ├─ Crea: Trie (árbol de prefijos)
+  └─ Salida: Grupos por similitud ADN
+  ↓
+SP8: Individuo[] → RegistroHistorial
+  ├─ Crea: TablaHash
+  ├─ Usa: NodoHash para encadenamiento
+  └─ Salida: Historial de pacientes
+  ↓
+FIN
+
+================================================================================
+TAMAÑO DE STRUCTS EN MEMORIA
+================================================================================
+
+STRUCT                          TAMAÑO (bytes)  CANTIDAD    TOTAL
+─────────────────────────────────────────────────────────────────
+Individuo                       ~130            1,000       130 KB
+Territorio                      ~140            20          2.8 KB
+Cepa                           ~70             50          3.5 KB
+NodoAdyacencia                 ~40             30+         1.2 KB
+NodoIndividuo                  ~20             1000        20 KB
+NodoHash                       ~32             1000        32 KB
+ElementoHeap                   ~24             10000+      240+ KB (temporal)
+EventoInfeccion                ~40             10000+      400+ KB (temporal)
+NodoTrie                       ~36             ~200        7.2 KB
+UnionFind                      ~variable       1           0.5 KB
+Cola/Fila                      ~variable       ~100        ~10 KB
+
+TOTAL ESTÁTICO: ~210 KB
+TOTAL CON TEMPORALES: ~850+ KB
+
+================================================================================
+ORDEN DE CREACION EN EL PROGRAMA
+================================================================================
+
+1. Inicialización (generador.c)
+   ├─ cepas[50] → Cepa[]
+   ├─ territorios[20] → Territorio[]
+   ├─ poblacion → Individuo[1000]
+   └─ grafo_territorios → Grafo
+
+2. Subproblema 1
+   ├─ copia arrays de Individuo
+   ├─ crea ElementoHeap[] temporal
+   └─ ordena y libera
+
+3. Subproblema 2
+   ├─ crea GrafoContactos
+   ├─ crea Cola (para BFS)
+   └─ Retorna ResultadoDeteccionBrotes
+
+4. Subproblema 3
+   ├─ crea Heap (Min-Heap)
+   ├─ crea EventoInfeccion[] (~10,000)
+   └─ Retorna ResultadoPropagacion
+
+5. Actualización de población
+   └─ modifica Individuo[].estado, .riesgo
+
+6. Subproblema 4
+   ├─ crea arrays temporal de riesgos
+   └─ Retorna ResultadoAislamiento
+
+7. Subproblema 5
+   ├─ crea Heap (Max-Heap)
+   └─ Retorna RutaCritica[]
+
+8. Subproblema 6
+   ├─ crea UnionFind O Heap
+   ├─ crea AristaTerritorios[]
+   └─ Retorna ResultadoMST
+
+9. Subproblema 7
+   ├─ crea Trie
+   ├─ crea NodoTrie[]
+   └─ Retorna GrupoVariantes[]
+
+10. Subproblema 8
+    ├─ crea TablaHash
+    ├─ crea NodoHash[1009]
+    └─ Retorna RegistroHistorial
+
+11. Limpieza
+    └─ libera_memoria() todas las estructuras
+
+================================================================================
+ALIASING Y PUNTEROS COMPLEJOS
+================================================================================
+
+Punteros a structs:
+  • Individuo *poblacion           ← Array de 1000
+  • Territorio *territorios        ← Array de 20
+  • Cepa *cepas                    ← Array de 50
+  • NodoIndividuo *individuos      ← Listas enlazadas (en Territorio)
+  • NodoAdyacencia **listas        ← Array de punteros (en Grafo)
+  • NodoHash **tabla               ← Array de 1009 buckets
+  • ElementoHeap *elementos        ← Array dinámico (en Heap)
+  • NodoTrie *raiz                 ← Árbol (en Trie)
+
+Punteros internos complejos:
+  • Individuo *data (en NodoIndividuo)
+  • struct NodoTrie *hijos[4] (recursiva, en NodoTrie)
+  • void *datos (genérico, en ElementoHeap)
+
+================================================================================
+NOTAS IMPORTANTES
+================================================================================
+
+1. CONVERSION DE DIRECCIONES:
+   - Individuo *poblacion es array: poblacion[i] acceso directo
+   - NodoIndividuo es lista: acceso secuencial
+
+2. GESTION DE MEMORIA:
+   - Structs fijos: Territorio, Cepa (asignación estática)
+   - Structs dinámicos: Nodos, Eventos (malloc)
+   - Liberación centralizada en liberar_memoria()
+
+3. EFICIENCIA:
+   - Hash Table: O(1) búsqueda promedio
+   - Trie: O(L) donde L = longitud ADN
+   - Heap: O(log n) inserción/extracción
+   - Union-Find: O(α(n)) ≈ O(1)
+
+4. DATOS GENÉRICOS:
+   - ElementoHeap.datos (void *) permite reutilización
+   - Heap funciona para min y max según es_min_heap
+
+================================================================================
